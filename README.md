@@ -2,9 +2,11 @@
 
 ### .bash_aliases
 
+Copy [`.bash_aliases`](./.bash_aliases) to `/home/<user>`.
+
 Uncomment this block in `/home/<user>/.bashrc`.
 
-```shell
+```bash
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -19,7 +21,9 @@ fi
 
 The [`brightness.sh`](./brightness.sh) script changes the screen brightness.
 
-```
+```bash
+$ ./brightness.sh -h
+
 Usage: ./brightness.sh [OPTIONS...]
 
 Brightness options:
