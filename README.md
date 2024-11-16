@@ -17,7 +17,7 @@ fi
 
 ### Brightness
 
-The (`brightness.sh`)[./brightness.sh] script changes the screen brightness.
+The (brightness.sh)[./brightness.sh] script changes the screen brightness.
 
 ```
 Usage: ./brightness.sh [OPTIONS...]
