@@ -3,16 +3,18 @@
 function help(){
     echo
     echo "Usage: $0 [options]"
-    echo 
+    echo
     echo "Brightness options:"
-    echo "-u, --up          Up brightness"
-    echo "-d, --down        Down brightness"
-    echo "-s, --step        Step brightness"
-    echo "-r, --reset       Default brightness"
+    echo "  -u, --up              Up brightness"
+    echo "  -d, --down            Down brightness"
+    echo "  -r, --reset           Reset brightness to 1.0"
+    echo "  -s, --step [number]   Step brightness (in percentage) [default 5]"
     echo
     echo "Monitor options:"
-    echo "-m, --monitor     Monitor"
-    echo "-f, --find        Find monitor name with"
+    echo "  -m, --monitor         Monitor"
+    echo "  -f, --find            Find monitor name"
+    echo
+    echo "-h, --help            Show this help message"
     echo
 }
 
