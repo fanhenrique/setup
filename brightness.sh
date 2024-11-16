@@ -2,19 +2,19 @@
 
 function help(){
     echo
-    echo "Usage: $0 [options]"
+    echo "Usage: $0 [OPTIONS...]"
     echo
     echo "Brightness options:"
     echo "  -u, --up              Up brightness"
     echo "  -d, --down            Down brightness"
     echo "  -r, --reset           Reset brightness to 1.0"
-    echo "  -s, --step [number]   Step brightness (in percentage) [default 5]"
+    echo "  -s, --step [number]   Step brightness (percentage) [default 5]"
     echo
     echo "Monitor options:"
     echo "  -m, --monitor         Monitor"
     echo "  -f, --find            Find monitor name"
     echo
-    echo "-h, --help            Show this help message"
+    echo "  -h, --help            Show this help message"
     echo
 }
 
