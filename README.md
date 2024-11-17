@@ -17,6 +17,20 @@ if [ -f ~/.bash_aliases ]; then
 fi
 ```
 
+### Monitors
+
+The [`monitors.sh`](./monitors.sh) script sets the resolution, refresh rate, and positioning of the monitors.
+
+Copy `monitors.sh` to `/home/<user>`.
+
+To start the system with this configuration, add the following line to `/home/<user>/.xsessionrc`.
+
+```bash
+if [ -f ~/monitors.sh ]; then
+    . ~/monitors.sh
+fi
+```
+
 ### Brightness
 
 The [`brightness.sh`](./brightness.sh) script changes the screen brightness.
