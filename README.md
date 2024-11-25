@@ -26,6 +26,15 @@ To add the new bindsym, use the following command and press the key whose name y
 xev -event keyboard
 ```
 
+#### i3blocks
+
+[i3blocks](https://github.com/vivien/i3blocks) is a feed generator for text based status bars.
+It executes your command lines and generates a status line from their output.
+Commands are scheduled at configured time intervals, upon signal reception or on clicks.
+The generated line is meant to be displayed by the i3 window manager through its i3bar component, as an alternative to i3status (default i3bar).
+
+Copy the [`i3blocks/`](./i3blocks) diretory to the`/home/<user>/.config/` path.
+
 ### .bash_aliases
 
 Copy [`.bash_aliases`](./.bash_aliases) to `/home/<user>`.
