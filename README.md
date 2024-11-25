@@ -1,5 +1,31 @@
 # Setup
 
+### i3
+
+The [i3](https://i3wm.org/) is a tiling window manager for X11, is free and open source software to GNU/Linux e BSD operating systems.
+
+#### configuration
+
+For all users, the configuration is in `etc/i3/config`. For specific users, the configuration is in `/home/<user>/.config/i3/config`.
+
+To generate the default i3 configuration, use:
+
+```bash
+i3-config-wizard
+```
+
+**Please see https://i3wm.org/docs/userguide.html for a complete reference**
+
+Copy the [`i3/`](./i3) diretory to the`/home/<user>/.config/` path.
+
+#### Finding the name of a key
+
+To add the new bindsym, use the following command and press the key whose name you want to know:
+
+```bash
+xev -event keyboard
+```
+
 ### .bash_aliases
 
 Copy [`.bash_aliases`](./.bash_aliases) to `/home/<user>`.
