@@ -1,10 +1,10 @@
 # Setup
 
-### i3
+## i3
 
 The [i3](https://i3wm.org/) is a tiling window manager for X11, is free and open source software to GNU/Linux e BSD operating systems.
 
-#### configuration
+### Configuration
 
 For all users, the configuration is in `etc/i3/config`. For specific users, the configuration is in `/home/<user>/.config/i3/config`.
 
@@ -18,7 +18,7 @@ i3-config-wizard
 
 Copy the [`i3/`](./i3) diretory to the`/home/<user>/.config/` path.
 
-#### Finding the name of a key
+### Finding the name of a key
 
 To add the new bindsym, use the following command and press the key whose name you want to know:
 
@@ -26,7 +26,7 @@ To add the new bindsym, use the following command and press the key whose name y
 xev -event keyboard
 ```
 
-#### i3blocks
+### i3blocks
 
 [i3blocks](https://github.com/vivien/i3blocks) is a feed generator for text based status bars.
 It executes your command lines and generates a status line from their output.
@@ -35,7 +35,7 @@ The generated line is meant to be displayed by the i3 window manager through its
 
 Copy the [`i3blocks/`](./i3blocks) diretory to the`/home/<user>/.config/` path.
 
-### .bash_aliases
+## Aliases
 
 Copy [`.bash_aliases`](./.bash_aliases) to `/home/<user>`.
 
@@ -52,7 +52,7 @@ if [ -f ~/.bash_aliases ]; then
 fi
 ```
 
-### Monitors
+## Monitors
 
 The [`monitors.sh`](./monitors.sh) script sets the resolution, refresh rate, and positioning of the monitors.
 
@@ -66,7 +66,7 @@ if [ -f ~/monitors.sh ]; then
 fi
 ```
 
-### Brightness
+## Brightness
 
 The [`brightness.sh`](./brightness.sh) script changes the screen brightness.
 
