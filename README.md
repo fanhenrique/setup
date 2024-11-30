@@ -90,3 +90,30 @@ Decreases brightness by 5% on monitor connected via eDP-1.
 ./brigtness --down --step 5 --monitor eDP-1
 ```
 
+## Keyboard
+
+### Keyboard configuration
+
+Generate the `keyboard` file by `dpkg-reconfigure keyboard-configuration` command and restart the `keyboard-setup` service.
+
+Or copy the [`keyboard`](./keyboard) file to `/etc/default/` and restart the `keyboard-setup` service.
+
+```bash
+sudo dpkg-reconfigure keyboard-configuration
+sudo service keyboard-setup restart
+```
+
+> See Debian wiki for more informations: https://wiki.debian.org/Keyboard
+
+### Remap keys
+
+Change this line in `/usr/share/X11/xkb/symbols/us` file.
+
+```bash
+#remove
+key <AC11> { [ dead_acute, dead_diaeresis, apostrophe, quotedbl ] };
+
+# add
+key <AC11> { [ apostrophe,  quotedbl, dead_acute, dead_diaeresis ] };
+```
+
