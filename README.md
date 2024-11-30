@@ -14,9 +14,9 @@ To generate the default i3 configuration, use:
 i3-config-wizard
 ```
 
-**Please see https://i3wm.org/docs/userguide.html for a complete reference**
-
 Copy the [`i3/`](./i3) diretory to the`/home/<user>/.config/` path.
+
+> See [i3 User’s Guide](https://i3wm.org/docs/userguide.html) for a complete reference.
 
 ### Finding the name of a key
 
