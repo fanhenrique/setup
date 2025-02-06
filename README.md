@@ -117,3 +117,17 @@ key <AC11> { [ dead_acute, dead_diaeresis, apostrophe, quotedbl ] };
 key <AC11> { [ apostrophe,  quotedbl, dead_acute, dead_diaeresis ] };
 ```
 
+## Dark theme GTK
+
+See Arch wiki for more information: https://wiki.archlinux.org/title/GTK
+
+### GTK 3
+
+Copy the [`gtk-3.0`](./gtk-3.0) directory to `$HOME/.config/`
+
+### GTK 4
+
+```bash
+gsettings set org.gnome.desktop.interface color-scheme prefer-dark
+```
+
