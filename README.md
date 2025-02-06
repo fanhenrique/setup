@@ -132,3 +132,9 @@ Copy the [`gtk-3.0`](./gtk-3.0) directory to `$HOME/.config/`
 gsettings set org.gnome.desktop.interface color-scheme prefer-dark
 ```
 
+## VSCodium Settings
+
+Copy the [`VSCodium/settings.json`](settings.json) file
+and [`VSCodium/keybindings.json`](keybindings.json) file
+to `$HOME/.config/VSCodium/User` directory.
+
