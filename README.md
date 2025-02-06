@@ -6,7 +6,7 @@ The [i3](https://i3wm.org/) is a tiling window manager for X11, is free and open
 
 ### Configuration
 
-For all users, the configuration is in `etc/i3/config`. For specific users, the configuration is in `/home/<user>/.config/i3/config`.
+For all users, the configuration is in `etc/i3/config`. For specific users, the configuration is in `$HOME/.config/i3/config`.
 
 To generate the default i3 configuration, use:
 
@@ -14,7 +14,7 @@ To generate the default i3 configuration, use:
 i3-config-wizard
 ```
 
-Copy the [`i3/`](./i3) diretory to the`/home/<user>/.config/` path.
+Copy the [`i3/`](./i3) directory to`$HOME/.config/`.
 
 > See [i3 User’s Guide](https://i3wm.org/docs/userguide.html) for a complete reference.
 
@@ -33,13 +33,14 @@ It executes your command lines and generates a status line from their output.
 Commands are scheduled at configured time intervals, upon signal reception or on clicks.
 The generated line is meant to be displayed by the i3 window manager through its i3bar component, as an alternative to i3status (default i3bar).
 
-Copy the [`i3blocks/`](./i3blocks) diretory to the`/home/<user>/.config/` path.
+Copy the [`i3blocks/`](./i3blocks) directory to `$HOME/.config/`.
+
 
 ## Aliases
 
-Copy [`.bash_aliases`](./.bash_aliases) to `/home/<user>`.
+Copy the [`.bash_aliases`](./.bash_aliases) file to `$HOME`.
 
-Uncomment this block in `/home/<user>/.bashrc`.
+Uncomment this block in `$HOME/.bashrc`.
 
 ```bash
 # Alias definitions.
@@ -56,9 +57,9 @@ fi
 
 The [`monitors.sh`](./monitors.sh) script sets the resolution, refresh rate, and positioning of the monitors.
 
-Copy `monitors.sh` to `/home/<user>`.
+Copy the `monitors.sh` file to `$HOME`.
 
-To start the system with this configuration, add the following line to `/home/<user>/.xsessionrc`.
+To start the system with this configuration, add the following line to `$HOME/.xsessionrc`.
 
 ```bash
 if [ -f ~/monitors.sh ]; then
@@ -110,7 +111,7 @@ sudo service keyboard-setup restart
 Change this line in `/usr/share/X11/xkb/symbols/us` file.
 
 ```bash
-#remove
+# remove
 key <AC11> { [ dead_acute, dead_diaeresis, apostrophe, quotedbl ] };
 
 # add
