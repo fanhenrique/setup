@@ -67,29 +67,11 @@ if [ -f ~/monitors.sh ]; then
 fi
 ```
 
-## Brightness
+## Monitor Control
 
-The [`brightness.sh`](./brightness.sh) script changes the screen brightness.
+Control brightness of monitors.
 
-See the help message for more usage details.
-
-```bash
-./brightness.sh --help
-```
-
-Example:
-
-Increases brightness by 10% on monitor connected via HDMI-1.
-
-```bash
-./brigtness --up --step 10 --monitor HDMI-1
-```
-
-Decreases brightness by 5% on monitor connected via eDP-1.
-
-```bash
-./brigtness --down --step 5 --monitor eDP-1
-```
+[monitorctl](https://github.com/fanhenrique/monitorctl)
 
 ## Keyboard
 
