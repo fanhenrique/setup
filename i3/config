@@ -40,8 +40,8 @@ exec --no-startup-id nm-applet
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && $refresh_i3status
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
 bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
@@ -130,9 +130,9 @@ set $ws9 "9"
 set $ws10 "10"
 
 # workspace secondary monitor
-workspace 10 output eDP-1
-workspace 9 output eDP-1
-workspace 8 output eDP-1
+#workspace 10 output eDP-1
+#workspace 9 output eDP-1
+#workspace 8 output eDP-1
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -338,10 +338,10 @@ client.unfocused        $focused_inactive_color $focused_inactive_color $focused
 ## Screenshot ##
 ################
 # Screenshot of the window in focus
-bindsym --release $mod+p exec --no-startup-id scrot --focused
+bindsym --release $mod+p exec --no-startup-id scrot --focused "$HOME/screenshot/%Y-%m-%d_%H-%M-%S.png"
 
 # Screenshot of the cropping area
-bindsym --release $mod+Shift+p exec scrot --select	
+bindsym --release $mod+Shift+p exec scrot --select "$HOME/screenshot/%Y-%m-%d_%H-%M-%S.png"
 
 
 ###############
@@ -357,24 +357,28 @@ exec --no-startup-id feh --bg-center ~/debian-wallpaper.jpg
 ########################
 # redshift installation required
 # sudo apt install redshift
-bindsym $mod+z exec --no-startup-id redshift -O 5500 -m randr
-bindsym $mod+x exec --no-startup-id redshift -x
+bindsym $mod+slash exec --no-startup-id redshift -O 5500 -m randr
 
 
 ###########################
 ## Translate select text ##
 ###########################
 # https://github.com/fanhenrique/translate-select-text
-bindsym --release $mod+t exec ~/repos/translate-select-text/translate.sh
+bindsym $mod+z exec --no-startup-id translate
 
 
 #########################
 ## Brightness monitors ##
 #########################
-# This script is in this repository
-bindsym $mod+comma exec --no-startup-id ~/repos/setup/brightness.sh --down --step 10 --monitor eDP-1 && ~/repos/setup/brightness.sh --down --step 10 --monitor HDMI-1
-bindsym $mod+period exec --no-startup-id ~/repos/setup/brightness.sh --up --step 10 --monitor eDP-1 && ~/repos/setup/brightness.sh --up --step 10 --monitor HDMI-1
+# https://github.com/fanhenrique/monitorctl 
+bindsym $mod+comma exec --no-startup-id brightness --down --step 10 --monitor HDMI-A-0
+bindsym $mod+period exec --no-startup-id brightness --up --step 10 --monitor HDMI-A-0
+bindsym $mod+m exec --no-startup-id brightness --reset --monitor HDMI-A-0
 
+###########
+## Audio ##
+###########
+#bindsym $mod+k exec --no-startup-id toggle-audio
 
 ##########################
 ## Format windows title ##
@@ -383,3 +387,11 @@ bindsym $mod+period exec --no-startup-id ~/repos/setup/brightness.sh --up --step
 # for_window [class=".*"] title_format "<b>%class</b>"
 # for_window [class="discord"] title_format "<b>Discord</b>"
 # for_window [class="firefox"] title_format "<b>Firefox</b>"
+
+
+#######################
+## Open applications ##
+#######################
+bindsym $mod+n exec firefox
+bindsym $mod+b exec flatpak run com.bitwarden.desktop
+bindsym $mod+c exec codium

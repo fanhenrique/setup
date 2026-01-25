@@ -1,5 +1,15 @@
 # Setup
 
+## Packeges
+
+xsel curl sed zenity
+exa xclip redshift
+feh scrot htop batcat
+python3
+nautilus bitwarden keepassxc transmission pulseaudio
+google-chrome-stable
+vlc obs-studio shotcut gimp
+
 ## i3
 
 The [i3](https://i3wm.org/) is a tiling window manager for X11, is free and open source software to GNU/Linux e BSD operating systems.
@@ -35,6 +45,16 @@ The generated line is meant to be displayed by the i3 window manager through its
 
 Copy the [`i3blocks/`](./i3blocks) directory to `$HOME/.config/`.
 
+## Network Manager
+
+Network managers via terminal.
+`nmcli` `nmtui`
+
+See Arch and Debian wiki for more information:
+
+Arch: https://wiki.archlinux.org/title/NetworkManager
+
+Debian: https://wiki.debian.org/NetworkManager
 
 ## Aliases
 
@@ -120,3 +140,39 @@ Copy the [`VSCodium/settings.json`](settings.json) file
 and [`VSCodium/keybindings.json`](keybindings.json) file
 to `$HOME/.config/VSCodium/User` directory.
 
+## Blue filter
+
+Script to change the brightness and redshift.
+
+Set default values ​​for `BRIGHTNESS` and `REDSHIFT` in `blue_filter.sh`
+
+`-b/--brightness=[0.0-1.0]`
+
+`-r/--redshift=[1000-25000]`
+
+```
+bf -b 0.7 -r 3800
+```
+
+# Manually Installed Programs
+
+## Google Chrome
+
+[Google Chrome](https://www.google.com/intl/pt-BR/chrome/)
+
+## Bitwarden
+
+[Bitwarden](https://bitwarden.com)
+
+## VSCodium 
+
+[VSCodium](https://vscodium.com/)
+
+## Github CLI
+
+[Github CLI](https://cli.github.com/)
+
+## Pyenv
+
+[Pyenv](https://github.com/pyenv/pyenv) lets you easily switch between multiple versions of Python.
+It's simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well.
