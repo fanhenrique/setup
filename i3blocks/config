@@ -33,19 +33,6 @@ markup=none
 command=date '+%d/%m/%Y %H:%M'
 interval=60
 
-# Volume indicator
-#
-# The first parameter sets the step (and units to display)
-# The second parameter overrides the mixer selection
-# See the script for details.
-[volume]
-label=VOL
-#label=♪
-instance=Master
-#instance=PCM
-interval=30
-signal=10
-#color=#FF0000
 
 # CPU usage
 #
@@ -152,3 +139,22 @@ instance=NUM
 interval=once
 signal=11
 
+
+# Volume indicator
+#
+# The first parameter sets the step (and units to display)
+# The second parameter overrides the mixer selection
+# See the script for details.
+[volume]
+label=VOL
+#label=♪
+instance=Master
+#instance=PCM
+interval=once
+signal=10
+
+
+[microphone]
+command=~/.config/i3blocks/microphone
+interval=once
+signal=11

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+SOURCE=$(pactl get-default-source)
+
+case "$BLOCK_BUTTON" in
+    1) pactl set-source-volume "$SOURCE" +5%;;
+    2) pactl set-source-mute "$SOURCE" toggle;;
+    3)pactl set-source-volume "$SOURCE" -5%;;
+esac
+
+
+STATE=$(pactl get-source-mute "$SOURCE" | awk '{print $2}')
+VOLUME=$(pactl get-source-volume "$SOURCE" | awk '{print $5}' | head -n1 | tr -d '%')
+
+
+if [ "$STATE" = "yes" ]; then
+	    echo "MIC off"
+    	echo "MIC off"
+    	echo "#FF0000"
+else
+    	echo "MIC $VOLUME%"
+    	echo "MIC $VOLUME%"
+	echo "#FFFFFF"
+fi
