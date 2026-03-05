@@ -8,8 +8,8 @@ alias bat="batcat"
 alias xc="xclip -in -selection clipboard"   # Copy
 alias xv="xclip -out -selection clipboard"  # Paste
 
-# Depends on the installation of the exa package
-alias ls="exa"
+# Depends on the installation of the eza package
+alias ls="eza"
 
 alias ll='ls -l'
 alias la='ls -la'
