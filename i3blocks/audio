@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Lista IDs dos sinks
+mapfile -t SINK_IDS < <(pactl list short sinks | awk '{print $1}')
+
+# Se não houver pelo menos dois, sai
+[ "${#SINK_IDS[@]}" -lt 2 ] && exit 0
+
+# Descobre o sink padrão atual (nome)
+CURRENT_SINK_NAME=$(pactl info | awk -F': ' '/Default Sink/ {print $2}')
+
+# Descobre o ID do sink atual
+CURRENT_SINK_ID=$(pactl list short sinks | awk -v name="$CURRENT_SINK_NAME" '$2==name {print $1}')
+
+# Encontra índice do atual
+for i in "${!SINK_IDS[@]}"; do
+    if [ "${SINK_IDS[$i]}" = "$CURRENT_SINK_ID" ]; then
+        CURRENT_INDEX=$i
+        break
+    fi
+done
+
+# Próximo índice (cíclico)
+NEXT_INDEX=$(( (CURRENT_INDEX + 1) % ${#SINK_IDS[@]} ))
+NEW_SINK_ID="${SINK_IDS[$NEXT_INDEX]}"
+
+# Pega nome do novo sink
+NEW_SINK_NAME=$(pactl list short sinks | awk -v id="$NEW_SINK_ID" '$1==id {print $2}')
+
+# Define como padrão
+pactl set-default-sink "$NEW_SINK_NAME"
+
+# Move todos os streams ativos
+for INPUT in $(pactl list short sink-inputs | awk '{print $1}'); do
+    pactl move-sink-input "$INPUT" "$NEW_SINK_NAME"
+done

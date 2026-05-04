@@ -1,0 +1,27 @@
+#!/bin/bash
+
+IFACE=$(ip route | awk '/default/ {print $5}')
+
+[ -z "$IFACE" ] && exit 0
+
+STATE=$(cat /sys/class/net/$IFACE/operstate 2>/dev/null)
+
+if [ "$STATE" != "up" ]; then
+    echo "$IFACE down"
+    echo "$IFACE down"
+    echo "#FF0000"
+    exit 0
+fi
+
+# Captura saída do script original
+OUTPUT=$(/usr/share/i3blocks/bandwidth "$IFACE")
+
+# Se por algum motivo vier vazio, evita sumir
+if [ -z "$OUTPUT" ]; then
+    echo "$IFACE up"
+    echo "$IFACE up"
+    exit 0
+fi
+
+echo "$OUTPUT $IFACE"
+echo "$OUTPUT $IFACE"

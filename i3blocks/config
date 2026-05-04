@@ -31,7 +31,7 @@ markup=none
 # Date Time
 [time]
 command=date '+%d/%m/%Y %H:%M'
-interval=60
+interval=05
 
 
 # CPU usage
@@ -40,7 +40,7 @@ interval=60
 # see the script for details.
 [cpu_usage]
 label=CPU
-#min_width=CPU: 100.00%
+min_width=CPU: 100%
 interval=5
 #separator=false
 
@@ -54,21 +54,21 @@ interval=5
 # see the script for details.
 [temperature]
 label=TEMP
-interval=10
+interval=01
 
 #Memory usage
 #
 # The type defaults to "mem" if the instance is not specified.
 [memory]
 label=MEM
-separator=false
-interval=30
+separator=true
+interval=10
 
 [memory]
 label=SWAP
 instance=swap
-separator=false
-interval=30
+separator=true
+interval=10
 
 # Disk usage
 #
@@ -85,19 +85,22 @@ interval=30
 # If the instance is not specified, use the interface used for default route.
 # The address can be forced to IPv4 or IPv6 with -4 or -6 switches.
 [iface]
-#instance=wlan0
+instance=enp3s0
+interval=05
+separator=true
 color=#00FF00
-interval=10
-separator=false
 
-[wifi]
+#[wifi]
 #instance=wlp3s0
-interval=10
-separator=false
+#interval=10
+#separator=false
 
 [bandwidth]
-#instance=eth0
-interval=5
+command=~/.config/i3blocks/bandwidth
+interval=1
+min_width=240
+align=right
+
 
 # Battery indicator
 #
