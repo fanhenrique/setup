@@ -66,7 +66,7 @@ bindsym $mod+Shift+q kill
 # A more modern dmenu replacement is rofi:
 # bindsym $mod+d exec "rofi -modi drun,run -show drun"
 # There also is i3-dmenu-desktop which only displays applications shipping a
-# .desktop filie. It is a wrapper around dmenu, so you need that installed.
+# .desktop file. It is a wrapper around dmenu, so you need that installed.
 bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i -fn 'Mono-12 Dejavu-14 Sans-14'"
 
 # change focus
@@ -370,6 +370,8 @@ bindsym $mod+m exec --no-startup-id brightness --reset --monitor HDMI-A-0
 # start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 # Appications
-bindsym $mod+Control+n exec firefox
+bindsym $mod+Control+f exec firefox
 bindsym $mod+Control+b exec flatpak run com.bitwarden.desktop
+bindsym $mod+Control+d exec flatpak run com.discordapp.Discord
 bindsym $mod+Control+c exec codium
+bindsym $mod+Control+p exec pavucontrol
