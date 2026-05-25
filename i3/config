@@ -14,6 +14,7 @@
 # Mod 4 - Windowns key
 # Mod 1 - Alt left key
 set $mod Mod4
+set $monitors HDMI-A-0
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -22,6 +23,9 @@ set $mod Mod4
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 font pango:DejaVu Sans Mono 11
+
+include ~/.config/i3/colors.conf
+include  ~/.config/i3/bar.conf
 
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
@@ -163,10 +167,10 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
+        # bindsym j resize shrink width 10 px or 10 ppt
+        # bindsym k resize grow height 10 px or 10 ppt
+        # bindsym l resize shrink height 10 px or 10 ppt
+        # bindsym semicolon resize grow width 10 px or 10 ppt
 
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
@@ -183,82 +187,6 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-bar {
-
-    # Default bar
-    # status_command i3status
-		
-    # i3blocks installation required
-    # sudo apt install i3blocks
-	status_command i3blocks
-
-    # Font bar
-	font pango:DejaVu Sans Mono 12
-	
-    # Show workspace number in bar
-    workspace_buttons yes
-
-    # Show bar to one or more monitors
-    # output primary|nonprimary|<output>
-    # output primary
-
-    # Show icons in bar on monitor
-    # tray_output none|primary|<output>
-	tray_output primary
-
-	# mode dock|hide|invisible
-	mode dock
-
-	# hidden_state hide|show
-	hidden_state show
-
-	# modifier <Modifier>|none
-	modifier none
-
-    # position top|bottom
-	position top
-
-
-    ################
-    ## Colors bar ##
-    ################
-	# Default color
-	# colors {
-    #     background #000000
-    #     statusline #ffffff
-    #     separator #666666
-    #
-    #     <colorclass>       <border>   <background>   <text>
-    #     focused_workspace  #4c7899      #285577      #ffffff
-    #     active_workspace   #333333      #5f676a      #ffffff
-    #     inactive_workspace #333333      #222222      #888888
-    #     urgent_workspace   #2f343a      #900000      #ffffff
-    #     binding_mode       #2f343a      #900000      #ffffff
-    # }
-
-	colors {
-	    background #000000
-		statusline #C9D6DF
-        separator #666666
-		
-		focused_workspace  $focused_color  $focused_color  $focused_text_color
-		active_workspace   $focused_inactive_color $focused_inactive_color $focused_inactive_text_color
-		inactive_workspace $focused_inactive_color $focused_inactive_color $focused_inactive_text_color
-		urgent_workspace   #2f343a #900000 #ffffff
-		binding_mode       #2f343a #900000 #ffffff
-	}
-}
-
-
-###################
-## Custom colors ##
-###################
-set $focused_color #8C8C8C
-set $focused_text_color #000000
-set $focused_inactive_text_color #D9D9D9
-set $focused_inactive_color #3A3A3A
 
 
 ##########
@@ -280,7 +208,7 @@ bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
 #############
 # default_border normal|none|pixel
 # default_border normal|pixel <px>
-default_border pixel 4px
+default_border pixel 6px
 
 # hide_edge_borders none|vertical|horizontal|both|smart|smart_no_gaps
 hide_edge_borders none
@@ -319,10 +247,6 @@ mouse_warping none
 # client.placeholder      #000000      #0c0c0c      #ffffff     #000000      #0c0c0c
 # client.background       #ffffff
 
-client.focused		    $focused_color          $focused_color          $focused_text_color          $focused_color
-client.focused_inactive $focused_inactive_color $focused_inactive_color $focused_inactive_text_color $focused_inactive_color
-client.unfocused        $focused_inactive_color $focused_inactive_color $focused_inactive_text_color $focused_inactive_color
-
 
 ################
 ## Screenshot ##
@@ -360,9 +284,9 @@ bindsym $mod+b exec --no-startup-id translate
 ## Brightness monitors ##
 #########################
 # https://github.com/fanhenrique/monitorctl 
-bindsym $mod+comma exec --no-startup-id brightness --down --step 0.1 --monitor HDMI-A-0
-bindsym $mod+period exec --no-startup-id brightness --up --step 0.1 --monitor HDMI-A-0
-bindsym $mod+m exec --no-startup-id brightness --reset --monitor HDMI-A-0
+bindsym $mod+comma exec --no-startup-id brightness --down --step 0.1 --monitor $monitors
+bindsym $mod+period exec --no-startup-id brightness --up --step 0.1 --monitor $monitors
+bindsym $mod+m exec --no-startup-id brightness --reset --monitor $monitors
 
 #######################
 ## Open applications ##
