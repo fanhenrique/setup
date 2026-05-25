@@ -14,7 +14,7 @@
 # Mod 4 - Windowns key
 # Mod 1 - Alt left key
 set $mod Mod4
-set $monitors HDMI-A-0
+set $monitors DP-1 DP-2
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -24,8 +24,9 @@ set $monitors HDMI-A-0
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 font pango:DejaVu Sans Mono 11
 
-include ~/.config/i3/colors.conf
-include  ~/.config/i3/bar.conf
+include ~/.config/i3/theme.conf
+include ~/.config/i3/windows.conf
+include ~/.config/i3/bar.conf
 
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
@@ -125,8 +126,9 @@ set $ws9 "9"
 set $ws10 "10"
 
 # workspace secondary monitor
-# workspace 9 output DP-2
-# workspace 10 output DP-2
+workspace 8 output DP-2
+workspace 9 output DP-2
+workspace 10 output DP-2
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -232,20 +234,6 @@ focus_follows_mouse no
 # Makes the mouse follow the focus between screens
 # mouse_warping output|none
 mouse_warping none
-
-
-####################
-## Colors windows ##
-####################
-
-# Default colors 
-# <colorclass>            <border>   <background>   <text>    <indicator>   <child_border>
-# client.focused          #4c7899      #285577      #ffffff     #2e9ef4      #285577
-# client.focused_inactive #333333      #5f676a      #ffffff     #484e50      #5f676a
-# client.unfocused        #333333      #222222      #888888     #292d2e      #222222
-# client.urgent           #2f343a      #900000      #ffffff     #900000      #900000
-# client.placeholder      #000000      #0c0c0c      #ffffff     #000000      #0c0c0c
-# client.background       #ffffff
 
 
 ################
