@@ -27,6 +27,7 @@ font pango:DejaVu Sans Mono 11
 include ~/.config/i3/theme.conf
 include ~/.config/i3/windows.conf
 include ~/.config/i3/bar.conf
+include ~/.config/i3/applications.conf
 
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
@@ -169,11 +170,7 @@ mode "resize" {
         # Pressing right will grow the window’s width.
         # Pressing up will shrink the window’s height.
         # Pressing down will grow the window’s height.
-        # bindsym j resize shrink width 10 px or 10 ppt
-        # bindsym k resize grow height 10 px or 10 ppt
-        # bindsym l resize shrink height 10 px or 10 ppt
-        # bindsym semicolon resize grow width 10 px or 10 ppt
-
+        
         # same bindings, but for the arrow keys
         bindsym Left resize shrink width 10 px or 10 ppt
         bindsym Down resize grow height 10 px or 10 ppt
@@ -188,102 +185,31 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-
-
-
-##########
-## Lock ##
-##########
+#Lock
 bindsym $mod+Control+l exec "i3lock -c 000000"
 
-
-####################
-## Key indicators ##
-####################
-# Caps_Lock and Num_Lock 
-bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
+# Caps_Lock and Num_Lock  indicators
+bindsym --release Caps_Lock exec pkikll -SIGRTMIN+11 i3blocks
 bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
 
 
-#############
-## Borders ##
-#############
+# Borders
 # default_border normal|none|pixel
 # default_border normal|pixel <px>
-default_border pixel 6px
+default_border pixel 5px
+default_floating_border pixel 2px
 
 # hide_edge_borders none|vertical|horizontal|both|smart|smart_no_gaps
 hide_edge_borders none
 
-
-##########
-## Gaps ##
-##########
 # Gap between windows
-#gaps inner 5px
+# gaps inner 5px
 # Gap around windows
-#gaps outer 5px
+# gaps outer 5px
 
-
-###########
-## Mouse ##
-###########
 # Focus follows the mouse
-focus_follows_mouse no
-
+# focus_follows_mouse yes|no
+focus_follows_mouse yes
 # Makes the mouse follow the focus between screens
 # mouse_warping output|none
-mouse_warping none
-
-
-################
-## Screenshot ##
-################
-# Screenshot of the window in focus
-bindsym --release $mod+p exec --no-startup-id scrot --focused "$HOME/screenshot/%Y-%m-%d_%H-%M-%S.png"
-
-# Screenshot of the cropping area
-bindsym --release $mod+Shift+p exec scrot --select "$HOME/screenshot/%Y-%m-%d_%H-%M-%S.png"
-
-
-###############
-## Wallpaper ##
-###############
-# feh installation required
-# sudo apt install feh
-exec --no-startup-id feh --bg-center ~/debian-wallpaper.jpg
-
-
-########################
-## Red shift monitors ##
-########################
-# redshift installation required
-# sudo apt install redshift
-bindsym $mod+slash exec --no-startup-id redshift -O 5500 -m randr
-
-
-###########################
-## Translate select text ##
-###########################
-# https://github.com/fanhenrique/translate-select-text
-bindsym $mod+b exec --no-startup-id translate
-
-#########################
-## Brightness monitors ##
-#########################
-# https://github.com/fanhenrique/monitorctl 
-bindsym $mod+comma exec --no-startup-id brightness --down --step 0.1 --monitor $monitors
-bindsym $mod+period exec --no-startup-id brightness --up --step 0.1 --monitor $monitors
-bindsym $mod+m exec --no-startup-id brightness --reset --monitor $monitors
-
-#######################
-## Open applications ##
-#######################
-# start a terminal
-bindsym $mod+Return exec i3-sensible-terminal
-# Appications
-bindsym $mod+Control+f exec firefox
-bindsym $mod+Control+b exec flatpak run com.bitwarden.desktop
-bindsym $mod+Control+d exec flatpak run com.discordapp.Discord
-bindsym $mod+Control+c exec codium
-bindsym $mod+Control+p exec pavucontrol
+mouse_warping output
