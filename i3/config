@@ -40,7 +40,7 @@ set $binding_text #d9d9d9
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono 11
+font pango:DejaVu Sans Mono 12
 
 include ~/.config/i3/windows.conf
 include ~/.config/i3/bar.conf
@@ -83,6 +83,7 @@ bindsym $mod+Shift+q kill
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i -fn 'Mono-12 Dejavu-14 Sans-14'"
 bindsym $mod+d exec --no-startup-id rofi -show drun
 bindsym $mod+Tab exec --no-startup-id rofi -show window
+bindsym $mod+l exec --no-startup-id rofi -show ssh
 
 # change focus
 bindsym $mod+Left focus left
