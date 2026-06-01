@@ -14,7 +14,25 @@
 # Mod 4 - OS key
 # Mod 1 - Alt left key
 set $mod Mod4
-set $monitors DP-1 DP-2
+set $monitors HDMI-A-0
+
+# Bar colors
+set $background #000000
+set $statusline #C9D6DF
+set $separator #666666
+
+# Workspace colors
+set $border_color #2f343a
+set $focused_color #c4c4c4
+set $focused_text #000000
+set $active_color #3a3a3a
+set $active_text #d9d9d9
+set $inactive_color #3a3a3a
+set $inactive_text #d9d9d9
+set $urgent_color #900000
+set $urgent_text #d9d9d9
+set $binding_color #900000
+set $binding_text #d9d9d9
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -24,12 +42,12 @@ set $monitors DP-1 DP-2
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 font pango:DejaVu Sans Mono 11
 
-include ~/.config/i3/theme.conf
 include ~/.config/i3/windows.conf
 include ~/.config/i3/bar.conf
 include ~/.config/i3/resize.conf
 include ~/.config/i3/workspaces.conf
 include ~/.config/i3/applications.conf
+include ~/.config/i3/media.conf
 
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
@@ -45,19 +63,6 @@ exec --no-startup-id dex --autostart --environment i3
 # NetworkManager is the most popular way to manage wireless networks on Linux,
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
-
-# Use pactl to adjust volume in PulseAudio.
-# Volume control
-set $refresh_volume pkill -RTMIN+10 i3blocks
-bindsym $mod+XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_volume
-bindsym $mod+XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && $refresh_volume
-bindsym $mod+XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_volume
-
-# Microphone control
-set $refresh_microphone pkill -RTMIN+11 i3blocks
-bindsym $mod+XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_microphone
-bindsym $mod+XF86Launch5 exec --no-startup-id pactl set-source-volume @DEFAULT_SOURCE@ +5% && $refresh_microphone
-bindsym $mod+XF86Launch6 exec --no-startup-id pactl set-source-volume @DEFAULT_SOURCE@ -5% && $refresh_microphone
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
