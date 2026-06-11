@@ -49,6 +49,7 @@ include ~/.config/i3/workspaces.conf
 include ~/.config/i3/applications.conf
 include ~/.config/i3/media.conf
 include ~/.config/i3/navigation.conf
+include ~/.config/i3/borders.conf
 
 # Start XDG autostart .desktop files using dex. See also
 # https://wiki.archlinux.org/index.php/XDG_Autostart
@@ -81,17 +82,3 @@ bindsym $mod+Control+l exec "i3lock -c 000000"
 # Caps_Lock and Num_Lock  indicators
 bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
-
-# Borders
-# default_border normal|none|pixel
-# default_border normal|pixel <px>
-default_border pixel 5px
-default_floating_border pixel 5px
-
-# hide_edge_borders none|vertical|horizontal|both|smart|smart_no_gaps
-hide_edge_borders none
-
-# Gap between windows
-# gaps inner 5px
-# Gap around windows
-# gaps outer 5px
