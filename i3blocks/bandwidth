@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Use the provided interface, otherwise the device used for the default route.
 if [[ -n $BLOCK_INSTANCE ]]; then
   INTERFACE=$BLOCK_INSTANCE
@@ -14,6 +15,23 @@ then
     echo "#FF0000"
     exit 0
 fi
+
+
+case $1 in
+  -4)
+    AF={inet} ;;
+  -6)
+    AF=inet6 ;;
+  *)
+    AF=inet6? ;;
+esac
+
+# if no interface is found, use the first device with a global scope
+IPADDR=$(ip addr show $IF | perl -n -e "/$AF ([^\/]+).* scope global/ && print \$1 and exit")
+
+case $BLOCK_BUTTON in
+  3) echo -n "$IPADDR" | xclip -q -se c ;;
+esac
 
 # path to store the old results in
 path="/dev/shm/$(basename $0)-${INTERFACE}"
@@ -53,7 +71,7 @@ tx_rate=$(( $tx_diff / $time_diff ))
 # 1024^2 = 1048576, then display MiB/s instead
 
 # incoming
-printf "%s IN " "$INTERFACE"
+printf "%s %s IN " "$INTERFACE" "$IPADDR"
 rx_kib=$(( $rx_rate >> 10 ))
 if [[ "$rx_rate" -gt 1048576 ]]; then
   printf '%4sM' "`echo "scale=1; $rx_kib / 1024" | bc`"
