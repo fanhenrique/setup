@@ -98,9 +98,6 @@ color=#00FF00
 [bandwidth]
 command=~/.config/i3blocks/bandwidth
 interval=1
-min_width=240
-align=right
-
 
 # Battery indicator
 #
