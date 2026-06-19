@@ -84,11 +84,11 @@ interval=30
 #
 # If the instance is not specified, use the interface used for default route.
 # The address can be forced to IPv4 or IPv6 with -4 or -6 switches.
-[iface]
-instance=enp3s0
-interval=05
-separator=true
-color=#00FF00
+# [iface]
+# instance=enp3s0
+# interval=05
+# separator=true
+# color=#00FF00
 
 #[wifi]
 #instance=wlp3s0
@@ -98,6 +98,7 @@ color=#00FF00
 [bandwidth]
 command=~/.config/i3blocks/bandwidth
 interval=1
+markup=pango
 
 # Battery indicator
 #

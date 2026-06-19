@@ -19,7 +19,7 @@ fi
 
 case $1 in
   -4)
-    AF={inet} ;;
+    AF=inet ;;
   -6)
     AF=inet6 ;;
   *)
@@ -27,7 +27,9 @@ case $1 in
 esac
 
 # if no interface is found, use the first device with a global scope
-IPADDR=$(ip addr show $IF | perl -n -e "/$AF ([^\/]+).* scope global/ && print \$1 and exit")
+IPADDR=$(ip addr show $INTERFACE | perl -n -e "/$AF ([^\/]+).* scope global/ && print \$1 and exit")
+
+printf "%s %s" "<b>$INTERFACE <span foreground='#00ff00'>$IPADDR</span></b>"
 
 case $BLOCK_BUTTON in
   3) echo -n "$IPADDR" | xclip -q -se c ;;
@@ -71,19 +73,19 @@ tx_rate=$(( $tx_diff / $time_diff ))
 # 1024^2 = 1048576, then display MiB/s instead
 
 # incoming
-printf "%s %s IN " "$INTERFACE" "$IPADDR"
+printf "<b>IN</b>"
 rx_kib=$(( $rx_rate >> 10 ))
 if [[ "$rx_rate" -gt 1048576 ]]; then
-  printf '%4sM' "`echo "scale=1; $rx_kib / 1024" | bc`"
+  printf "%4sM" "`echo "scale=1; $rx_kib / 1024" | bc`"
 else
-  printf '%4sK' $rx_kib
+  printf "%4sK" $rx_kib
 fi
 
 # outgoing
-printf " OUT "
+printf " <b>OUT</b>"
 tx_kib=$(( $tx_rate >> 10 ))
 if [[ "$tx_rate" -gt 1048576 ]]; then
-  printf '%4sM' "`echo "scale=1; $tx_kib / 1024" | bc`"
+  printf "%4sM" "`echo "scale=1; $tx_kib / 1024" | bc`"
 else
-  printf '%4sK' $tx_kib
+  printf "%4sK" $tx_kib
 fi
