@@ -55,8 +55,8 @@ include ~/.config/i3/autostart.conf
 # screen before suspend. Use loginctl lock-session to lock your screen.
 # exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 
-# kill focused window
-bindsym $mod+Shift+q kill
+# Kill focused window
+bindsym $mod+q kill
 
 # Reload the configuration file
 bindsym $mod+Shift+c reload
