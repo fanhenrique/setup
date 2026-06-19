@@ -16,11 +16,6 @@
 set $mod Mod4
 set $monitors HDMI-A-0
 
-# Bar colors
-set $background #000000
-set $statusline #C9D6DF
-set $separator #666666
-
 # Workspace colors
 set $border_color #2f343a
 set $focused_color #c4c4c4
