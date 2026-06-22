@@ -38,7 +38,7 @@ set $binding_text #d9d9d9
 font pango:DejaVu Sans Mono 12
 
 include ~/.config/i3/windows.conf
-include ~/.config/i3/bar.conf
+#include ~/.config/i3/bar.conf
 include ~/.config/i3/resize.conf
 include ~/.config/i3/workspaces.conf
 include ~/.config/i3/applications.conf
@@ -61,7 +61,7 @@ bindsym $mod+q kill
 # Reload the configuration file
 bindsym $mod+Shift+c reload
 # Restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
-bindsym $mod+Shift+r restart
+bindsym $mod+Shift+x restart
 # Exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
@@ -71,3 +71,5 @@ bindsym $mod+Control+l exec "i3lock -c 000000"
 # Caps_Lock and Num_Lock  indicators
 bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
+
+exec_always --no-startup-id ~/.config/polybar/launch.sh
