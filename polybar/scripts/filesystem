@@ -2,25 +2,29 @@
 
 STATE_FILE="/tmp/polybar-filesystem"
 
-# alterna modo ao clicar
-if [[ "$1" == "toggle" ]]; then
-  if [[ -f "$STATE_FILE" ]]; then
-    rm "$STATE_FILE"
+PARTITIONS=(
+  "/"
+  "/home"
+)
+
+get_fs_info() {
+  df -hP "$1" 2>/dev/null | awk 'NR==2 {print $3, $2, $5}'
+}
+
+# toggle mode by clicking
+[[ "$1" == "toggle" ]] && ([[ -e "$STATE_FILE" ]] && rm "$STATE_FILE" || touch "$STATE_FILE")
+
+expanded=false
+[[ -e "$STATE_FILE" ]] && expanded=true
+
+for partition in "${PARTITIONS[@]}"; do
+  read -r used size percent <<< "$(get_fs_info "$partition")"
+
+  LABEL="%{F#61afef}$partition%{F-}"
+
+  if ! $expanded; then
+    printf "%s %s " "$LABEL" "$percent"
   else
-    touch "$STATE_FILE"
+    printf "%s %s/%s " "$LABEL" "$used" "$size"
   fi
-fi
-
-MODE="compact"
-[[ -f "$STATE_FILE" ]] && MODE="full"
-
-root_pct=$(df / | awk 'NR==2 {print $5}')
-home_pct=$(df /home | awk 'NR==2 {print $5}')
-
-if [[ "$MODE" == "compact" ]]; then
-  printf "/ %s HOME %s" $root_pct $home_pct
-else
-  root_full=$(df -h / | awk 'NR==2 {print $3 "/" $2}')
-  home_full=$(df -h /home | awk 'NR==2 {print $3 "/" $2}')
-  printf "/ %s %s HOME %s %s" $root_full $root_pct $home_full $home_pct
-fi
+done
