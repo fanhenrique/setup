@@ -29,8 +29,6 @@ esac
 # if no interface is found, use the first device with a global scope
 IPADDR=$(ip addr show $INTERFACE | perl -n -e "/$AF ([^\/]+).* scope global/ && print \$1 and exit")
 
-printf "%%{F#FFFFFF}%s%%{F#00ff00} %s%%{F-} " "$INTERFACE" "$IPADDR"
-
 case $BLOCK_BUTTON in
   3) echo -n "$IPADDR" | xclip -q -se c ;;
 esac
@@ -58,16 +56,20 @@ echo "${time} ${rx} ${tx}" > "${path}"
 
 # parse old data and calc time passed
 old=(${old//;/ })
+# old=($old)
 time_diff=$(( $time - ${old[0]} ))
 
 # sanity check: has a positive amount of time passed
-[[ "${time_diff}" -gt 0 ]] || exit
+# [[ "${time_diff}" -gt 0 ]] || exit
+(( time_diff <= 0 )) && time_diff=1
 
 # calc bytes transferred, and their rate in byte/s
-rx_diff=$(( $rx - ${old[1]} ))
-tx_diff=$(( $tx - ${old[2]} ))
-rx_rate=$(( $rx_diff / $time_diff ))
-tx_rate=$(( $tx_diff / $time_diff ))
+rx_diff=$(( rx - old[1] ))
+tx_diff=$(( tx - old[2] ))
+rx_rate=$(( rx_diff / time_diff ))
+tx_rate=$(( tx_diff / time_diff ))
+
+printf "%%{F#FFFFFF}%s%%{F#00ff00} %s%%{F-} " "$INTERFACE" "$IPADDR"
 
 # shift by 10 bytes to get KiB/s. If the value is larger than
 # 1024^2 = 1048576, then display MiB/s instead
