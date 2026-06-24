@@ -11,6 +11,19 @@ get_fs_info() {
   df -hP "$1" 2>/dev/null | awk 'NR==2 {print $3, $2, $5}'
 }
 
+# get_swap_info() {
+#   read -r total used <<< "$(free -b | awk '/Swap:/ {print $2, $3}')"
+
+#   if [[ "$total" -eq 0 ]]; then
+#     echo "0 0 0%"
+#     return
+#   fi
+
+#   percent=$(( used * 100 / total ))
+
+#   echo "$(numfmt --to=iec $used) $(numfmt --to=iec $total) ${percent}%"
+# }
+
 # toggle mode by clicking
 [[ "$1" == "toggle" ]] && ([[ -e "$STATE_FILE" ]] && rm "$STATE_FILE" || touch "$STATE_FILE")
 
@@ -28,3 +41,14 @@ for partition in "${PARTITIONS[@]}"; do
     printf "%s %s/%s " "$LABEL" "$used" "$size"
   fi
 done
+
+# # Swap separado
+# read -r swap_used swap_size swap_percent <<< "$(get_swap_info)"
+
+# SWAP_LABEL="%{F#61afef}SWAP%{F-}"
+
+# if ! $expanded; then
+#   printf "%s %s" "$SWAP_LABEL" "$swap_percent"
+# else
+#   printf "%s %s/%s" "$SWAP_LABEL" "$swap_used" "$swap_size"
+# fi

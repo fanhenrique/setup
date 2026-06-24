@@ -55,8 +55,8 @@ read old < "${path}"
 echo "${time} ${rx} ${tx}" > "${path}"
 
 # parse old data and calc time passed
-old=(${old//;/ })
-# old=($old)
+# old=(${old//;/ })
+old=($old)
 time_diff=$(( $time - ${old[0]} ))
 
 # sanity check: has a positive amount of time passed
