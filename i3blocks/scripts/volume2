@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+REFRESH_SIGNAL=10
+
+# ======== FUNÇÃO: alternar sink ========
+toggle_sink() {
+    mapfile -t SINKS < <(pactl list short sinks | awk '{print $2}')
+    CURRENT=$(pactl info | awk -F': ' '/Default Sink/ {print $2}')
+
+    for i in "${!SINKS[@]}"; do
+        if [ "${SINKS[$i]}" = "$CURRENT" ]; then
+            NEXT_INDEX=$(( (i + 1) % ${#SINKS[@]} ))
+            break
+        fi
+    done
+
+    NEW_SINK="${SINKS[$NEXT_INDEX]}"
+
+    pactl set-default-sink "$NEW_SINK"
+
+    for INPUT in $(pactl list short sink-inputs | awk '{print $1}'); do
+        pactl move-sink-input "$INPUT" "$NEW_SINK"
+    done
+}
+
+# ======== CLIQUES ========
+case "$BLOCK_BUTTON" in
+    1)  # clique esquerdo → troca saída
+        toggle_sink
+        ;;
+    4)  # scroll up
+        pactl set-sink-volume @DEFAULT_SINK@ +5%
+        ;;
+    5)  # scroll down
+        pactl set-sink-volume @DEFAULT_SINK@ -5%
+        ;;
+    3)  # clique direito → mute
+        pactl set-sink-mute @DEFAULT_SINK@ toggle
+        ;;
+esac
+
+# ======== INFO ATUAL ========
+VOLUME=$(pactl get-sink-volume @DEFAULT_SINK@ | awk '{print $5}' | head -n1)
+MUTED=$(pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}')
+CURRENT=$(pactl info | awk -F': ' '/Default Sink/ {print $2}')
+
+# Nome amigável da saída
+if echo "$CURRENT" | grep -qi usb; then
+    OUTPUT="🎧"
+elif echo "$CURRENT" | grep -qi hdmi; then
+    OUTPUT="📺"
+else
+    OUTPUT="🔊"
+fi
+
+# Ícone volume
+if [ "$MUTED" = "yes" ]; then
+    ICON="🔇"
+else
+    ICON="🔊"
+fi
+
+echo "$OUTPUT $ICON $VOLUME"

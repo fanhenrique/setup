@@ -1,63 +1,70 @@
-#!/usr/bin/env bash
+#!/bin/bash
+# Copyright (C) 2014 Julien Bonjean <julien@bonjean.info>
+# Copyright (C) 2014 Alexander Keller <github@nycroth.com>
 
-REFRESH_SIGNAL=10
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-# ======== FUNÇÃO: alternar sink ========
-toggle_sink() {
-    mapfile -t SINKS < <(pactl list short sinks | awk '{print $2}')
-    CURRENT=$(pactl info | awk -F': ' '/Default Sink/ {print $2}')
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-    for i in "${!SINKS[@]}"; do
-        if [ "${SINKS[$i]}" = "$CURRENT" ]; then
-            NEXT_INDEX=$(( (i + 1) % ${#SINKS[@]} ))
-            break
-        fi
-    done
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    NEW_SINK="${SINKS[$NEXT_INDEX]}"
+#------------------------------------------------------------------------
 
-    pactl set-default-sink "$NEW_SINK"
+# The second parameter overrides the mixer selection
+# For PulseAudio users, use "pulse"
+# For Jack/Jack2 users, use "jackplug"
+# For ALSA users, you may use "default" for your primary card
+# or you may use hw:# where # is the number of the card desired
+MIXER="default"
+[ -n "$(lsmod | grep pulse)" ] && MIXER="pulse"
+[ -n "$(lsmod | grep jack)" ] && MIXER="jackplug"
+MIXER="${2:-$MIXER}"
+echo "$MIXER"
+# The instance option sets the control to report and configure
+# This defaults to the first control of your selected mixer
+# For a list of the available, use `amixer -D $Your_Mixer scontrols`
+SCONTROL="${BLOCK_INSTANCE:-$(amixer -D $MIXER scontrols |
+                  sed -n "s/Simple mixer control '\([A-Za-z ]*\)',0/\1/p" |
+                  head -n1
+                )}"
 
-    for INPUT in $(pactl list short sink-inputs | awk '{print $1}'); do
-        pactl move-sink-input "$INPUT" "$NEW_SINK"
-    done
+# The first parameter sets the step to change the volume by (and units to display)
+# This may be in in % or dB (eg. 5% or 3dB)
+STEP="${1:-5%}"
+
+#------------------------------------------------------------------------
+
+capability() { # Return "Capture" if the device is a capture device
+  amixer -D $MIXER get $SCONTROL |
+    sed -n "s/  Capabilities:.*cvolume.*/Capture/p"
 }
 
-# ======== CLIQUES ========
-case "$BLOCK_BUTTON" in
-    1)  # clique esquerdo → troca saída
-        toggle_sink
-        ;;
-    4)  # scroll up
-        pactl set-sink-volume @DEFAULT_SINK@ +5%
-        ;;
-    5)  # scroll down
-        pactl set-sink-volume @DEFAULT_SINK@ -5%
-        ;;
-    3)  # clique direito → mute
-        pactl set-sink-mute @DEFAULT_SINK@ toggle
-        ;;
+volume() {
+  amixer -D $MIXER get $SCONTROL $(capability)
+}
+
+format() {
+  perl_filter='if (/.*\[(\d+%)\] (\[(-?\d+.\d+dB)\] )?\[(on|off)\]/)'
+  perl_filter+='{CORE::say $4 eq "off" ? "MUTE" : "'
+  # If dB was selected, print that instead
+  perl_filter+=$([[ $STEP = *dB ]] && echo '$3' || echo '$1')
+  perl_filter+='"; exit}'
+  perl -ne "$perl_filter"
+}
+
+#------------------------------------------------------------------------
+
+case $BLOCK_BUTTON in
+  3) amixer -q -D $MIXER sset $SCONTROL $(capability) toggle ;;  # right click, mute/unmute
+  4) amixer -q -D $MIXER sset $SCONTROL $(capability) ${STEP}+ unmute ;; # scroll up, increase
+  5) amixer -q -D $MIXER sset $SCONTROL $(capability) ${STEP}- unmute ;; # scroll down, decrease
 esac
 
-# ======== INFO ATUAL ========
-VOLUME=$(pactl get-sink-volume @DEFAULT_SINK@ | awk '{print $5}' | head -n1)
-MUTED=$(pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}')
-CURRENT=$(pactl info | awk -F': ' '/Default Sink/ {print $2}')
-
-# Nome amigável da saída
-if echo "$CURRENT" | grep -qi usb; then
-    OUTPUT="🎧"
-elif echo "$CURRENT" | grep -qi hdmi; then
-    OUTPUT="📺"
-else
-    OUTPUT="🔊"
-fi
-
-# Ícone volume
-if [ "$MUTED" = "yes" ]; then
-    ICON="🔇"
-else
-    ICON="🔊"
-fi
-
-echo "$OUTPUT $ICON $VOLUME"
+volume | format

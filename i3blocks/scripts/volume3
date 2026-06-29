@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+STEP=5%
+SIGNAL=10
+
+refresh() {
+    pkill -RTMIN+$SIGNAL i3blocks >/dev/null 2>&1
+}
+
+toggle_sink() {
+    mapfile -t SINKS < <(pactl list short sinks | awk '{print $2}')
+
+    [[ ${#SINKS[@]} -le 1 ]] && return
+
+    CURRENT=$(pactl info | awk -F': ' '/Default Sink/ {print $2}')
+
+    for i in "${!SINKS[@]}"; do
+        if [[ "${SINKS[$i]}" == "$CURRENT" ]]; then
+            NEXT=$(( (i + 1) % ${#SINKS[@]} ))
+            break
+        fi
+    done
+
+    NEW="${SINKS[$NEXT]}"
+
+    pactl set-default-sink "$NEW"
+
+    while read -r ID _; do
+        pactl move-sink-input "$ID" "$NEW"
+    done < <(pactl list short sink-inputs)
+}
+
+case "$BLOCK_BUTTON" in
+    1)
+        toggle_sink
+        refresh
+        ;;
+    3)
+        pactl set-sink-mute @DEFAULT_SINK@ toggle
+        refresh
+        ;;
+    4)
+        pactl set-sink-volume @DEFAULT_SINK@ +"$STEP"
+        refresh
+        ;;
+    5)
+        pactl set-sink-volume @DEFAULT_SINK@ -"${STEP}"
+        refresh
+        ;;
+esac
+
+CURRENT=$(pactl info | awk -F': ' '/Default Sink/ {print $2}')
+
+# Nome amigável
+case "$CURRENT" in
+    *analog-stereo*)
+        OUTPUT="Analog"
+        ;;
+    *hdmi*)
+        OUTPUT="HDMI"
+        ;;
+    *usb*)
+        OUTPUT="USB"
+        ;;
+    *)
+        OUTPUT="${CURRENT##*.}"
+        ;;
+esac
+
+VOLUME=$(pactl get-sink-volume @DEFAULT_SINK@ | awk 'NR==1 {print $5}')
+MUTED=$(pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}')
+
+if [[ "$MUTED" == "yes" ]]; then
+    STATUS="MUTE"
+else
+    STATUS="$VOLUME"
+fi
+
+echo "$OUTPUT $STATUS"
