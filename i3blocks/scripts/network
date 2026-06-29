@@ -1,0 +1,103 @@
+#!/bin/bash
+
+STATE_FILE="/tmp/i3blocks-network"
+
+if [[ "$BLOCK_BUTTON" == "1" ]]; then
+  [[ -e "$STATE_FILE" ]] && rm "$STATE_FILE" || touch "$STATE_FILE"
+  pkill -RTMIN+7 i3blocks >/dev/null 2>&1
+  exit 0
+fi
+
+# Use the provided interface, otherwise the device used for the default route.
+if [[ -n $BLOCK_INSTANCE ]]; then
+  INTERFACE=$BLOCK_INSTANCE
+else
+  INTERFACE=$(ip route | awk '/^default/ { print $5 ; exit }')
+fi
+
+# Issue #36 compliant.
+if [[ ! -e "/sys/class/net/${INTERFACE}/operstate" ]] ||
+  [[ "$(cat "/sys/class/net/${INTERFACE}/operstate")" != "up" ]]; then
+    printf "<span foreground='#61afef' weight='bold'>%s</span> <span foreground='#bf616a'>down</span>\n" "$INTERFACE"
+    exit 0
+fi
+
+case $1 in
+  -4)
+    AF=inet ;;
+  -6)
+    AF=inet6 ;;
+  *)
+    AF=inet6? ;;
+esac
+
+# if no interface is found, use the first device with a global scope
+IPADDR=$(ip addr show $INTERFACE | perl -n -e "/$AF ([^\/]+).* scope global/ && print \$1 and exit")
+
+if [[ "$BLOCK_BUTTON" == "3" && -n "$IPADDR" ]]; then
+    printf "%s" "$IPADDR" | xclip -selection clipboard >/dev/null 2>&1
+fi
+
+# path to store the old results in
+path="/dev/shm/$(basename $0)-${INTERFACE}"
+
+# grabbing data for each adapter.
+read rx < "/sys/class/net/${INTERFACE}/statistics/rx_bytes"
+read tx < "/sys/class/net/${INTERFACE}/statistics/tx_bytes"
+
+time=$(date +%s)
+
+# write current data if file does not exist. Do not exit, this will cause
+# problems if this file is sourced instead of executed as another process.
+if ! [[ -f "${path}" ]]; then
+  echo "${time} ${rx} ${tx}" > "${path}"
+  chmod 0666 "${path}"
+fi
+
+# read previous state and update data storage
+read old < "${path}"
+# echo "${time} ${rx} ${tx}" > "${path}"
+printf "%s %s %s\n" "$time" "$rx" "$tx" > "${path}"
+
+# parse old data and calc time passed
+old=(${old//;/ })
+time_diff=$(( $time - ${old[0]} ))
+
+# sanity check: has a positive amount of time passed
+[[ "${time_diff}" -gt 0 ]] || exit
+
+# calc bytes transferred, and their rate in byte/s
+rx_rate=$(((rx - old[1]) / time_diff))
+tx_rate=$(((tx - old[2]) / time_diff))
+
+# printf "%s %s" "<b>$INTERFACE <span foreground='#00ff00'>$IPADDR</span></b>"
+
+
+format_rate() {
+  # shift by 10 bytes to get KiB/s. If the value is larger than
+  # 1024^2 = 1048576, then display MiB/s instead
+  local rate=$1
+
+  if (( rate >= 1048576 )); then
+    # printf "%5.1fM" "$(bc <<< "scale=1; $rate / 1048576")"
+    printf "%5.1fM" "$(awk "BEGIN {print $rate/1048576}")"
+  else
+    # printf "%5.1fK" "$(bc <<< "scale=1; $rate / 1024")"
+    printf "%5.1fK" "$(awk "BEGIN {print $rate/1024}")"
+  fi
+}
+
+# incoming
+rx_text=$(format_rate "$rx_rate")
+# # outgoing
+tx_text=$(format_rate "$tx_rate")
+
+
+if [[ -e "$STATE_FILE" ]]; then
+  printf "<span foreground='#00ff00' weight='bold'>%s</span> " "$INTERFACE"
+  printf "<b>%s</b> " "$IPADDR"
+  printf "<b>↓</b> %s " "$rx_text"
+  printf "<b>↑</b> %s\n" "$tx_text"
+else
+  printf "<span foreground='#00ff00' weight='bold'>%s</span>" "$INTERFACE"
+fi

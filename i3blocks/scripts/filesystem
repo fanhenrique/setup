@@ -1,0 +1,31 @@
+#!/bin/bash
+
+STATE_FILE="/tmp/polybar-filesystem"
+
+PARTITIONS=(
+  "/"
+  "/home"
+)
+
+get_fs_info() {
+  df -hP "$1" 2>/dev/null | awk 'NR==2 {print $3, $2, $5}'
+}
+
+# toggle mode by clicking
+if [[ "$BLOCK_BUTTON" == "1" ]]; then
+    [[ -e "$STATE_FILE" ]] && rm "$STATE_FILE" || touch "$STATE_FILE"
+    pkill -RTMIN+6 i3blocks >/dev/null 2>&1
+fi
+
+expanded=false
+[[ -e "$STATE_FILE" ]] && expanded=true
+
+for partition in "${PARTITIONS[@]}"; do
+  read -r used size percent <<< "$(get_fs_info "$partition")"
+
+  if ! $expanded; then
+    printf "%s %s " "$partition" "$percent"
+  else
+    printf "%s %s/%s " "$partition" "$used" "$size"
+  fi
+done

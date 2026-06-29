@@ -35,10 +35,10 @@ set $binding_text #d9d9d9
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono 12
+font pango:DejaVu Sans Mono 10
 
 include ~/.config/i3/windows.conf
-#include ~/.config/i3/bar.conf
+include ~/.config/i3/bar.conf
 include ~/.config/i3/resize.conf
 include ~/.config/i3/workspaces.conf
 include ~/.config/i3/applications.conf
@@ -72,4 +72,4 @@ bindsym $mod+Control+l exec "i3lock -c 000000"
 bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
 
-exec_always --no-startup-id ~/.config/polybar/launch.sh
+# exec_always --no-startup-id ~/.config/polybar/launch.sh

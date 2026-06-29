@@ -26,7 +26,7 @@
 # Each block command defaults to the script name to avoid boilerplate.
 command=/usr/share/i3blocks/$BLOCK_NAME
 separator_block_width=20
-markup=none
+markup=pango
 
 # Date Time
 [time]
@@ -44,8 +44,8 @@ min_width=CPU: 100%
 interval=5
 #separator=false
 
-#[load_average]
-#interval=10
+# [load_average]
+# interval=10
 
 # Temperature
 #
@@ -59,26 +59,36 @@ interval=01
 #Memory usage
 #
 # The type defaults to "mem" if the instance is not specified.
-[memory]
-label=MEM
-separator=true
-interval=10
+# [memory]
+# label=MEM
+# separator=true
+# interval=10
+
+# [memory]
+# label=SWAP
+# instance=swap
+# separator=true
+# interval=10
 
 [memory]
-label=SWAP
-instance=swap
-separator=true
-interval=10
+command=~/.config/i3blocks/scripts/memory
+signal=5
+interval=3
 
 # Disk usage
 #
 # The directory defaults to $HOME if the instance is not specified.
 # The script may be called with a optional argument to set the alert
 # (defaults to 10 for 10%).
-[disk]
-label=HOME
-#instance=/mnt/data
-interval=30
+# [disk]
+# label=HOME
+# #instance=/mnt/data
+# interval=30
+
+[filesystem]
+command=~/.config/i3blocks/scripts/filesystem
+signal=6
+interval=10
 
 # Network interface monitoring
 #
@@ -95,19 +105,20 @@ interval=30
 #interval=10
 #separator=false
 
-[bandwidth]
-command=~/.config/i3blocks/bandwidth
+[network]
+command=~/.config/i3blocks/scripts/network
+signal=7
 interval=1
-markup=pango
+
 
 # Battery indicator
 #
 # The battery instance defaults to 0.
-[battery]
-label=BAT
-#label=⚡
-#instance=1
-interval=30
+# [battery]
+# label=BAT
+# #label=⚡
+# #instance=1
+# interval=30
 
 # Generic media player support
 #
@@ -156,6 +167,6 @@ signal=10
 
 
 [microphone]
-command=~/.config/i3blocks/microphone
+command=~/.config/i3blocks/scripts/microphone
 interval=once
 signal=11
