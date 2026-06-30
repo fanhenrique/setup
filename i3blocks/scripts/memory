@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$HOME/.config/i3blocks/scripts/utils/utils"
+
 STATE_FILE="/tmp/i3blocks-memory"
 
 # toggle mode by clicking
@@ -11,28 +13,6 @@ fi
 mem=$(free | awk '/Mem:/ {printf "%.0f", $3/$2*100}')
 swap=$(free | awk '/Swap:/ {if ($2 > 0) printf "%.0f", $3/$2*100; else print 0}')
 
-ramp() {
-    local p=$1
-    local c color
-
-    if   [ "$p" -lt 13 ]; then c="▁"
-    elif [ "$p" -lt 25 ]; then c="▂"
-    elif [ "$p" -lt 38 ]; then c="▃"
-    elif [ "$p" -lt 50 ]; then c="▄"
-    elif [ "$p" -lt 63 ]; then c="▅"
-    elif [ "$p" -lt 75 ]; then c="▆"
-    elif [ "$p" -lt 88 ]; then c="▇"
-    else c="█"
-    fi
-
-    if   [ "$p" -lt 50 ]; then color="#a3be8c"
-    elif [ "$p" -lt 80 ]; then color="#ebcb8b"
-    else color="#bf616a"
-    fi
-
-    printf "<span bgcolor='#3b4252' foreground='%s'>%s</span>" "$color" "$c"
-    
-}
 
 if [ -e "$STATE_FILE" ]; then
     printf "<b>RAM</b> %s <b>SWAP</b> %s\n" "$(ramp "$mem")" "$(ramp "$swap")"

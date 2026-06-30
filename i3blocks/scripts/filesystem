@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$HOME/.config/i3blocks/scripts/utils/utils"
+
 STATE_FILE="/tmp/polybar-filesystem"
 
 PARTITIONS=(
@@ -7,25 +9,46 @@ PARTITIONS=(
   "/home"
 )
 
+EXPAND_TIME=10
+
 get_fs_info() {
-  df -hP "$1" 2>/dev/null | awk 'NR==2 {print $3, $2, $5}'
+  # df -hP "$1" 2>/dev/null | awk 'NR==2 {print $3, $2, $5}'
+  df -hP "$1" 2>/dev/null | awk 'NR==2 {gsub("%","",$5); print $3, $2, $5}'
 }
 
 # toggle mode by clicking
+# if [[ "$BLOCK_BUTTON" == "1" ]]; then
+#     [[ -e "$STATE_FILE" ]] && rm "$STATE_FILE" || touch "$STATE_FILE"
+#     pkill -RTMIN+6 i3blocks >/dev/null 2>&1
+# fi
+
+# Expande temporariamente ao clicar
 if [[ "$BLOCK_BUTTON" == "1" ]]; then
-    [[ -e "$STATE_FILE" ]] && rm "$STATE_FILE" || touch "$STATE_FILE"
+    touch "$STATE_FILE"
     pkill -RTMIN+6 i3blocks >/dev/null 2>&1
 fi
 
 expanded=false
-[[ -e "$STATE_FILE" ]] && expanded=true
+
+if [[ -f "$STATE_FILE" ]]; then
+    age=$(( $(date +%s) - $(stat -c %Y "$STATE_FILE") ))
+
+    if (( age < EXPAND_TIME )); then
+        expanded=true
+    else
+        rm -f "$STATE_FILE"
+    fi
+fi
+
+# expanded=false
+# [[ -e "$STATE_FILE" ]] && expanded=true
 
 for partition in "${PARTITIONS[@]}"; do
   read -r used size percent <<< "$(get_fs_info "$partition")"
 
   if ! $expanded; then
-    printf "%s %s " "$partition" "$percent"
+    printf "<b>%s</b> %s %s" "$partition" "$(ramp "$percent")"
   else
-    printf "%s %s/%s " "$partition" "$used" "$size"
+    printf "<b>%s</b> %s %s%% (%s/%s) " "$partition" "$(ramp "$percent")" "$percent" "$used" "$size"
   fi
 done

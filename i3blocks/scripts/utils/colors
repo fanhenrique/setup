@@ -1,0 +1,7 @@
+#!/bin/bash
+
+#Bar colors
+BACKGROUND_BAR="#3b4252"
+PRIMARY_BAR="#bf616a"
+WARNING_BAR="#a3be8c"
+DANGER_BAR="#ebcb8b"

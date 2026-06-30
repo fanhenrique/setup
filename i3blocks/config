@@ -159,9 +159,6 @@ signal=11
 # See the script for details.
 [volume]
 command=~/.config/i3blocks/scripts/volume3
-label=VOL
-instance=Master
-#instance=PCM
 interval=5
 signal=10
 

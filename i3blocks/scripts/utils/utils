@@ -1,0 +1,27 @@
+#!/bin/bash
+
+source "$HOME/.config/i3blocks/scripts/utils/colors"
+
+ramp() {
+    local p=$1
+    local c color
+
+    if   [ "$p" -lt 5 ];  then c=" "
+    elif [ "$p" -lt 13 ]; then c="▁"
+    elif [ "$p" -lt 25 ]; then c="▂"
+    elif [ "$p" -lt 38 ]; then c="▃"
+    elif [ "$p" -lt 50 ]; then c="▄"
+    elif [ "$p" -lt 63 ]; then c="▅"
+    elif [ "$p" -lt 75 ]; then c="▆"
+    elif [ "$p" -lt 88 ]; then c="▇"
+    else c="█"
+    fi
+
+    if   [ "$p" -lt 60 ]; then color="$WARNING_BAR"
+    elif [ "$p" -lt 80 ]; then color="$DANGER_BAR"
+    else color="$PRIMARY_BAR"
+    fi
+
+    printf "<span bgcolor='%s' foreground='%s'>%s</span>" "$BACKGROUND_BAR" "$color" "$c"
+    
+}

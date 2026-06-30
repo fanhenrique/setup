@@ -10,10 +10,11 @@ refresh() {
 toggle_sink() {
     mapfile -t SINKS < <(pactl list short sinks | awk '{print $2}')
 
-    [[ ${#SINKS[@]} -le 1 ]] && return
+    (( ${#SINKS[@]} <= 1 )) && return
 
-    CURRENT=$(pactl info | awk -F': ' '/Default Sink/ {print $2}')
+    CURRENT=$(pactl get-default-sink)
 
+    NEXT=0
     for i in "${!SINKS[@]}"; do
         if [[ "${SINKS[$i]}" == "$CURRENT" ]]; then
             NEXT=$(( (i + 1) % ${#SINKS[@]} ))
@@ -25,55 +26,79 @@ toggle_sink() {
 
     pactl set-default-sink "$NEW"
 
+    # Move todos os streams para o novo sink
     while read -r ID _; do
         pactl move-sink-input "$ID" "$NEW"
     done < <(pactl list short sink-inputs)
 }
 
+get_sink_description() {
+    local sink="$1"
+
+    pactl list sinks |
+    awk -v sink="$sink" '
+        $1=="Name:" && $2==sink {found=1}
+        found && $1=="Description:" {
+            $1=""
+            sub(/^ /,"")
+            print
+            exit
+        }
+    '
+}
+
+short_name() {
+    local name="$1"
+
+    case "$name" in
+        *"Built-in"*)
+            echo "Interno"
+            ;;
+        *"USB"*)
+            echo "USB"
+            ;;
+        *"HDMI"*|*"DisplayPort"*)
+            echo "HDMI"
+            ;;
+        *)
+            # Retorna apenas a primeira palavra
+            echo "$name" | awk '{print $1}'
+            ;;
+    esac
+}
+
 case "$BLOCK_BUTTON" in
     1)
-        toggle_sink
+        pactl set-sink-mute @DEFAULT_SINK@ toggle
         refresh
         ;;
     3)
-        pactl set-sink-mute @DEFAULT_SINK@ toggle
+        toggle_sink
+
         refresh
         ;;
     4)
         pactl set-sink-volume @DEFAULT_SINK@ +"$STEP"
+        pactl set-sink-mute @DEFAULT_SINK@ 0
         refresh
         ;;
     5)
         pactl set-sink-volume @DEFAULT_SINK@ -"${STEP}"
+        pactl set-sink-mute @DEFAULT_SINK@ 0
         refresh
         ;;
 esac
 
-CURRENT=$(pactl info | awk -F': ' '/Default Sink/ {print $2}')
+CURRENT=$(pactl get-default-sink)
 
-# Nome amigável
-case "$CURRENT" in
-    *analog-stereo*)
-        OUTPUT="Analog"
-        ;;
-    *hdmi*)
-        OUTPUT="HDMI"
-        ;;
-    *usb*)
-        OUTPUT="USB"
-        ;;
-    *)
-        OUTPUT="${CURRENT##*.}"
-        ;;
-esac
+OUTPUT=$(get_sink_description "$CURRENT")
+OUTPUT=$(short_name "$OUTPUT")
 
 VOLUME=$(pactl get-sink-volume @DEFAULT_SINK@ | awk 'NR==1 {print $5}')
 MUTED=$(pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}')
 
 if [[ "$MUTED" == "yes" ]]; then
-    STATUS="MUTE"
+    printf "<span foreground='#ff0000'>%s MUTE</span>" "$OUTPUT"
 else
-    STATUS="$VOLUME"
+    echo "$OUTPUT $VOLUME"
 fi
-
-echo "$OUTPUT $STATUS"
