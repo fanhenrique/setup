@@ -2,6 +2,8 @@
 
 source "$HOME/.config/i3blocks/scripts/utils/colors"
 
+EXPAND_TIME=3
+
 ramp() {
     local p=$1
     local c color
@@ -24,4 +26,76 @@ ramp() {
 
     printf "<span bgcolor='%s' foreground='%s'>%s</span>" "$BACKGROUND_BAR" "$color" "$c"
     
+}
+
+expandable_start() {
+    local state_file="$1"
+    local signal="$2"
+    local expand_time="${3:-${EXPAND_TIME:-10}}"
+
+    local pid=0 expires=0
+
+    if [[ -f "$state_file" ]]; then
+        read -r pid expires < "$state_file"
+
+        # Mata apenas um temporizador válido.
+        if (( expires != -1 && pid > 0 )); then
+            kill "$pid" 2>/dev/null
+        fi
+    fi
+
+    expires=$(( $(date +%s) + expand_time ))
+
+    setsid bash -c "
+        sleep $expand_time
+        pkill -RTMIN+$signal i3blocks >/dev/null 2>&1
+    " >/dev/null 2>&1 &
+
+    echo "$! $expires" > "$state_file"
+}
+
+expandable_toggle() {
+    local state_file="$1"
+
+    local pid=0 expires=0
+
+    if [[ -f "$state_file" ]]; then
+        read -r pid expires < "$state_file"
+
+        # Se já está permanente, volta ao modo compacto.
+        if (( expires == -1 )); then
+            rm -f "$state_file"
+            return
+        fi
+
+        # Se estava em expansão temporária, cancela o temporizador.
+        if (( pid > 0 )); then
+            kill "$pid" 2>/dev/null
+        fi
+    fi
+
+    # Expansão permanente.
+    echo "-1 -1" > "$state_file"
+}
+
+expandable() {
+    local state_file="$1"
+
+    [[ -f "$state_file" ]] || return 1
+
+    local pid expires
+    read -r pid expires < "$state_file"
+
+    # Expansão permanente.
+    if (( expires == -1 )); then
+        return 0
+    fi
+
+    # Expansão temporária.
+    if (( $(date +%s) < expires )); then
+        return 0
+    fi
+
+    rm -f "$state_file"
+    return 1
 }
