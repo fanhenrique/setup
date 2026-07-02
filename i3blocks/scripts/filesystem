@@ -1,9 +1,9 @@
 #!/bin/bash
 
 source "$HOME/.config/i3blocks/scripts/utils/utils"
+source "$HOME/.config/i3blocks/scripts/utils/expandable"
 
-STATE_FILE="/tmp/polybar-filesystem"
-
+STATE_FILE="/tmp/i3blocks-filesystem"
 SIGNAL=6
 
 PARTITIONS=(
@@ -19,12 +19,8 @@ get_fs_info() {
 }
 
 case "$BLOCK_BUTTON" in
-    1)
-        expandable_start "$STATE_FILE" "$SIGNAL"
-        ;;
-    3)
-        expandable_toggle "$STATE_FILE"
-        ;;
+    1) expandable_start "$STATE_FILE" "$SIGNAL";;
+    3) expandable_toggle "$STATE_FILE";;
 esac
 
 for partition in "${PARTITIONS[@]}"; do

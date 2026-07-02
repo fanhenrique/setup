@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# EXPAND_PID=0
+# EXPAND_EXPIRES=0
+
+expandable_toggle() {
+    local state_file="$1"
+
+    if expandable "$state_file"; then
+        rm -f "$state_file"
+    else
+        printf 'perm\n' > "$state_file"
+    fi
+}
+
+expandable_start() {
+    local state_file="$1"
+    local signal="$2"
+    local expand_time="${3:-${EXPAND_TIME:-10}}"
+
+    if expandable "$state_file"; then
+        rm -f "$state_file"
+        return
+    fi
+
+    local expires=$(( $(date +%s) + expand_time ))
+
+    printf "%s\n" "$expires" > "$state_file"
+
+    setsid bash -c "
+        sleep $expand_time
+        pkill -RTMIN+$signal i3blocks >/dev/null 2>&1
+    " >/dev/null 2>&1 &
+}
+
+expandable() {
+    local state_file="$1"
+
+    [[ -f "$state_file" ]] || return 1
+
+    local state
+    read -r state < "$state_file"
+
+    (( state == "perm" )) && return 0
+
+    if (( $(date +%s) < state )); then
+        return 0
+    fi
+
+    rm -f "$state_file"
+    return 1
+}

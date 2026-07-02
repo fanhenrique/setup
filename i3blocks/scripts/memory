@@ -1,23 +1,26 @@
 #!/bin/bash
 
 source "$HOME/.config/i3blocks/scripts/utils/utils"
+source "$HOME/.config/i3blocks/scripts/utils/expandable"
 
 STATE_FILE="/tmp/i3blocks-memory"
+SIGNAL=5
 
 # toggle mode by clicking
-if [[ "$BLOCK_BUTTON" == "1" ]]; then
-    [[ -e "$STATE_FILE" ]] && rm "$STATE_FILE" || touch "$STATE_FILE"
-    pkill -RTMIN+5 i3blocks >/dev/null 2>&1
-fi
+case "$BLOCK_BUTTON" in
+    1) expandable_start "$STATE_FILE" "$SIGNAL";;
+    3) expandable_toggle "$STATE_FILE";;
+esac
+
 
 mem=$(free | awk '/Mem:/ {printf "%.0f", $3/$2*100}')
 swap=$(free | awk '/Swap:/ {if ($2 > 0) printf "%.0f", $3/$2*100; else print 0}')
 
 
-if [ -e "$STATE_FILE" ]; then
-    printf "<b>RAM</b> %s <b>SWAP</b> %s\n" "$(ramp "$mem")" "$(ramp "$swap")"
-else
+if expandable "$STATE_FILE" "$SIGNAL"; then
     printf "<b>RAM</b> %s %s%% <b>SWAP</b> %s %s%%\n" \
         "$(ramp "$mem")" "$mem" \
         "$(ramp "$swap")" "$swap"
+else
+    printf "<b>RAM</b> %s <b>SWAP</b> %s\n" "$(ramp "$mem")" "$(ramp "$swap")"    
 fi
