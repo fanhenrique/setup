@@ -1,12 +1,14 @@
 #!/bin/bash
 
-STATE_FILE="/tmp/i3blocks-network"
+source "$HOME/.config/i3blocks/scripts/utils/expandable"
 
-if [[ "$BLOCK_BUTTON" == "1" ]]; then
-  [[ -e "$STATE_FILE" ]] && rm "$STATE_FILE" || touch "$STATE_FILE"
-  pkill -RTMIN+7 i3blocks >/dev/null 2>&1
-  exit 0
-fi
+STATE_FILE="/tmp/i3blocks-network"
+SIGNAL=7
+
+case "$BLOCK_BUTTON" in
+    1) expandable_start "$STATE_FILE" "$SIGNAL";;
+    3) expandable_toggle "$STATE_FILE";;
+esac
 
 # Use the provided interface, otherwise the device used for the default route.
 if [[ -n $BLOCK_INSTANCE ]]; then
@@ -93,11 +95,13 @@ rx_text=$(format_rate "$rx_rate")
 tx_text=$(format_rate "$tx_rate")
 
 
-if [[ -e "$STATE_FILE" ]]; then
+if expandable "$STATE_FILE"; then
   printf "<span foreground='#00ff00' weight='bold'>%s</span> " "$INTERFACE"
   printf "<b>%s</b> " "$IPADDR"
   printf "<b>↓</b> %s " "$rx_text"
   printf "<b>↑</b> %s\n" "$tx_text"
+  exit 0
 else
   printf "<span foreground='#00ff00' weight='bold'>%s</span>" "$INTERFACE"
+  exit 0
 fi
