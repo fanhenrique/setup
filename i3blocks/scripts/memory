@@ -12,12 +12,11 @@ case "$BLOCK_BUTTON" in
     3) expandable_toggle "$STATE_FILE";;
 esac
 
-
 mem=$(free | awk '/Mem:/ {printf "%.0f", $3/$2*100}')
 swap=$(free | awk '/Swap:/ {if ($2 > 0) printf "%.0f", $3/$2*100; else print 0}')
 
 
-if expandable "$STATE_FILE" "$SIGNAL"; then
+if expandable "$STATE_FILE"; then
     printf "<b>RAM</b> %s %s%% <b>SWAP</b> %s %s%%\n" \
         "$(ramp "$mem")" "$mem" \
         "$(ramp "$swap")" "$swap"

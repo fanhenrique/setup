@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# EXPAND_PID=0
-# EXPAND_EXPIRES=0
+EXPANDSION_TIME=5
+EXPANSION_TIME_LIMIT=60
 
 expandable_toggle() {
     local state_file="$1"
@@ -16,7 +16,7 @@ expandable_toggle() {
 expandable_start() {
     local state_file="$1"
     local signal="$2"
-    local expand_time="${3:-${EXPAND_TIME:-10}}"
+    local expand_time="${3:-${EXPANDSION_TIME:-EXPANSION_TIME_LIMIT}}"
 
     if expandable "$state_file"; then
         rm -f "$state_file"
@@ -41,7 +41,7 @@ expandable() {
     local state
     read -r state < "$state_file"
 
-    (( state == "perm" )) && return 0
+    [[ "$state" == "perm" ]] && return 0
 
     if (( $(date +%s) < state )); then
         return 0
