@@ -106,9 +106,9 @@ interval=10
 #separator=false
 
 [network]
-command=~/.config/i3blocks/scripts/network
-signal=7
+command=~/.config/i3blocks/scripts/network2
 interval=1
+signal=7
 
 
 # Battery indicator

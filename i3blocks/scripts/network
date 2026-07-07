@@ -17,9 +17,16 @@ else
   INTERFACE=$(ip route | awk '/^default/ { print $5 ; exit }')
 fi
 
-# Issue #36 compliant.
-if [[ ! -e "/sys/class/net/${INTERFACE}/operstate" ]] ||
-  [[ "$(cat "/sys/class/net/${INTERFACE}/operstate")" != "up" ]]; then
+# # Issue #36 compliant.
+# if [[ ! -e "/sys/class/net/${INTERFACE}/operstate" ]] ||
+#   [[ "$(cat "/sys/class/net/${INTERFACE}/operstate")" != "up" ]]; then
+#     printf "<span foreground='#61afef' weight='bold'>%s</span> <span foreground='#bf616a'>down</span>\n" "$INTERFACE"
+#     exit 0
+# fi
+
+OPERSTATE="/sys/class/net/$INTERFACE/operstate"
+
+if [[ ! -r "$OPERSTATE" ]] || [[ $(<"$OPERSTATE") != up ]]; then
     printf "<span foreground='#61afef' weight='bold'>%s</span> <span foreground='#bf616a'>down</span>\n" "$INTERFACE"
     exit 0
 fi

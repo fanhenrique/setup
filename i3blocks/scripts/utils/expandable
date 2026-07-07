@@ -1,6 +1,6 @@
 #!/bin/bash
 
-EXPANDSION_TIME=5
+EXPANSION_TIME=5
 EXPANSION_TIME_LIMIT=60
 
 expandable_toggle() {
@@ -9,14 +9,14 @@ expandable_toggle() {
     if expandable "$state_file"; then
         rm -f "$state_file"
     else
-        printf 'perm\n' > "$state_file"
+        printf "perm\n" > "$state_file"
     fi
 }
 
 expandable_start() {
     local state_file="$1"
     local signal="$2"
-    local expand_time="${3:-${EXPANDSION_TIME:-EXPANSION_TIME_LIMIT}}"
+    local expand_time="${3:-$EXPANSION_TIME}"
 
     if expandable "$state_file"; then
         rm -f "$state_file"
@@ -27,10 +27,21 @@ expandable_start() {
 
     printf "%s\n" "$expires" > "$state_file"
 
-    setsid bash -c "
-        sleep $expand_time
-        pkill -RTMIN+$signal i3blocks >/dev/null 2>&1
-    " >/dev/null 2>&1 &
+    (
+        sleep "$expand_time"
+
+        [[ -f "$state_file" ]] || exit 0
+
+        local state
+        read -r state < "$state_file"
+
+        # Outro clique alterou o estado.
+        [[ "$state" == "$expires" ]] || exit 0
+
+        rm -f "$state_file"
+
+        pkill -RTMIN+"$signal" i3blocks >/dev/null 2>&1
+    ) >/dev/null 2>&1 &
 }
 
 expandable() {
