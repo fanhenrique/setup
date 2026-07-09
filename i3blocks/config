@@ -135,23 +135,6 @@ signal=7
 #[openvpn]
 #interval=20
 
-# Key indicators
-#
-# Add the following bindings to i3 config file:
-#
-#bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
-#bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
-[keyindicator]
-instance=CAPS
-interval=once
-signal=11
-
-[keyindicator]
-instance=NUM
-interval=once
-signal=11
-
-
 # Volume indicator
 #
 # The first parameter sets the step (and units to display)
@@ -165,5 +148,14 @@ signal=10
 
 [microphone]
 command=~/.config/i3blocks/scripts/microphone
+
+# Key indicators
+#
+# Add the following bindings to i3 config file:
+#
+#bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
+#bindsym --release Num_Lock  exec pkill -SIGRTMIN+11 i3blocks
+[keyindicator]
+command=~/.config/i3blocks/scripts/keyindicator
 interval=once
 signal=11
