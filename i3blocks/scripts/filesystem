@@ -23,12 +23,16 @@ case "$BLOCK_BUTTON" in
     3) expandable_toggle "$STATE_FILE";;
 esac
 
+output=""
+
 for partition in "${PARTITIONS[@]}"; do
     read -r used size percent <<<"$(get_fs_info "$partition")"
 
     if expandable "$STATE_FILE"; then
-        printf "<b>%s</b> %s %s%% (%s/%s) " "$partition" "$(ramp "$percent")" "$percent" "$used" "$size"
+        output+="${output:+ }<b>$partition</b> $(ramp "$percent") $percent% ($used/$size)"
     else
-        printf "<b>%s</b> %s %s" "$partition" "$(ramp "$percent")"
+        output+="${output:+ }<b>$partition</b> $(ramp "$percent")"
     fi
 done
+
+printf "%s\n" "$output"
