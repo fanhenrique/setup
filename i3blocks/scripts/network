@@ -4,10 +4,11 @@ source "$HOME/.config/i3blocks/scripts/utils/expandable"
 
 STATE_FILE="/tmp/i3blocks-network"
 SIGNAL=7
+CACHE="/dev/shm/network"
 
 case "$BLOCK_BUTTON" in
-    1) expandable_start "$STATE_FILE" "$SIGNAL";;
-    3) expandable_toggle "$STATE_FILE";;
+    1) expandable_start "$STATE_FILE" "$SIGNAL" ;;
+    3) expandable_toggle "$STATE_FILE" ;;
 esac
 
 # Use the provided interface, otherwise the device used for the default route.
@@ -17,98 +18,59 @@ else
   INTERFACE=$(ip route | awk '/^default/ { print $5 ; exit }')
 fi
 
-# # Issue #36 compliant.
-# if [[ ! -e "/sys/class/net/${INTERFACE}/operstate" ]] ||
-#   [[ "$(cat "/sys/class/net/${INTERFACE}/operstate")" != "up" ]]; then
-#     printf "<span foreground='#61afef' weight='bold'>%s</span> <span foreground='#bf616a'>down</span>\n" "$INTERFACE"
-#     exit 0
-# fi
-
 OPERSTATE="/sys/class/net/$INTERFACE/operstate"
 
-if [[ ! -r "$OPERSTATE" ]] || [[ $(<"$OPERSTATE") != up ]]; then
+if [[ ! -r "$OPERSTATE" || $(<"$OPERSTATE") != up ]]; then
     printf "<span foreground='#61afef' weight='bold'>%s</span> <span foreground='#bf616a'>down</span>\n" "$INTERFACE"
     exit 0
 fi
 
-case $1 in
-  -4)
-    AF=inet ;;
-  -6)
-    AF=inet6 ;;
-  *)
-    AF=inet6? ;;
-esac
+RX_FILE="/sys/class/net/$INTERFACE/statistics/rx_bytes"
+TX_FILE="/sys/class/net/$INTERFACE/statistics/tx_bytes"
 
-# if no interface is found, use the first device with a global scope
-IPADDR=$(ip addr show $INTERFACE | perl -n -e "/$AF ([^\/]+).* scope global/ && print \$1 and exit")
+rx=$(<"$RX_FILE")
+tx=$(<"$TX_FILE")
+now=$(date +%s)
 
-if [[ "$BLOCK_BUTTON" == "3" && -n "$IPADDR" ]]; then
-    printf "%s" "$IPADDR" | xclip -selection clipboard >/dev/null 2>&1
+CACHE_FILE="${CACHE}-${INTERFACE}"
+
+if [[ ! -f "$CACHE_FILE" ]]; then
+    printf "%s %s %s\n" "$now" "$rx" "$tx" > "$CACHE_FILE"
+    chmod 666 "$CACHE_FILE"
 fi
 
-# path to store the old results in
-path="/dev/shm/$(basename $0)-${INTERFACE}"
+read -r old_time old_rx old_tx < "$CACHE_FILE"
 
-# grabbing data for each adapter.
-read rx < "/sys/class/net/${INTERFACE}/statistics/rx_bytes"
-read tx < "/sys/class/net/${INTERFACE}/statistics/tx_bytes"
+printf "%s %s %s\n" "$now" "$rx" "$tx" > "$CACHE_FILE"
 
-time=$(date +%s)
+dt=$((now - old_time))
+((dt > 0)) || dt=1
 
-# write current data if file does not exist. Do not exit, this will cause
-# problems if this file is sourced instead of executed as another process.
-if ! [[ -f "${path}" ]]; then
-  echo "${time} ${rx} ${tx}" > "${path}"
-  chmod 0666 "${path}"
-fi
-
-# read previous state and update data storage
-read old < "${path}"
-# echo "${time} ${rx} ${tx}" > "${path}"
-printf "%s %s %s\n" "$time" "$rx" "$tx" > "${path}"
-
-# parse old data and calc time passed
-old=(${old//;/ })
-time_diff=$(( $time - ${old[0]} ))
-
-# sanity check: has a positive amount of time passed
-[[ "${time_diff}" -gt 0 ]] || exit
-
-# calc bytes transferred, and their rate in byte/s
-rx_rate=$(((rx - old[1]) / time_diff))
-tx_rate=$(((tx - old[2]) / time_diff))
-
-# printf "%s %s" "<b>$INTERFACE <span foreground='#00ff00'>$IPADDR</span></b>"
-
+rx_rate=$(((rx - old_rx) / dt))
+tx_rate=$(((tx - old_tx) / dt))
 
 format_rate() {
-  # shift by 10 bytes to get KiB/s. If the value is larger than
-  # 1024^2 = 1048576, then display MiB/s instead
-  local rate=$1
+    # shift by 10 bytes to get KiB/s. If the value is larger than
+    # 1024^2 = 1048576, then display MiB/s instead
+    local rate=$1
 
-  if (( rate >= 1048576 )); then
-    # printf "%5.1fM" "$(bc <<< "scale=1; $rate / 1048576")"
-    printf "%5.1fM" "$(awk "BEGIN {print $rate/1048576}")"
-  else
-    # printf "%5.1fK" "$(bc <<< "scale=1; $rate / 1024")"
-    printf "%5.1fK" "$(awk "BEGIN {print $rate/1024}")"
-  fi
+    if ((rate >= 1048576)); then
+        printf "%5.1f<b>M</b>" "$(awk "BEGIN {print $rate/1048576}")"
+    elif ((rate >= 1024)); then
+        printf "%5.1f<b>K</b>" "$(awk "BEGIN {print $rate/1024}")"
+    else
+        printf "%5.f<b>B</b>" "$(awk "BEGIN {print $rate}")"
+    fi
 }
 
-# incoming
-rx_text=$(format_rate "$rx_rate")
-# # outgoing
-tx_text=$(format_rate "$tx_rate")
+if (expandable "$STATE_FILE"); then
 
+    IPADDR=$(ip -4 addr show "$INTERFACE" | awk '/inet / {print $2}' | cut -d/ -f1)
 
-if expandable "$STATE_FILE"; then
-  printf "<span foreground='#00ff00' weight='bold'>%s</span> " "$INTERFACE"
-  printf "<b>%s</b> " "$IPADDR"
-  printf "<b>↓</b> %s " "$rx_text"
-  printf "<b>↑</b> %s\n" "$tx_text"
-  exit 0
+    printf "<span foreground='#00ff00' weight='bold'>%s</span> " "$INTERFACE"
+    printf "<b>%s</b> " "$IPADDR"
+    printf "<b>↓</b>%s " "$(format_rate "$rx_rate")"
+    printf "<b>↑</b>%s\n" "$(format_rate "$tx_rate")"
 else
-  printf "<span foreground='#00ff00' weight='bold'>%s</span>" "$INTERFACE"
-  exit 0
+    printf "<span foreground='#00ff00' weight='bold'>%s</span>\n" "$INTERFACE"
 fi

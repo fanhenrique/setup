@@ -106,7 +106,7 @@ interval=10
 #separator=false
 
 [network]
-command=~/.config/i3blocks/scripts/network2
+command=~/.config/i3blocks/scripts/network
 interval=1
 signal=7
 
