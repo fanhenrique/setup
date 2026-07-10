@@ -133,23 +133,12 @@ bf -b 0.7 -r 3800
 
 # Manually Installed Programs
 
-## Google Chrome
+* [Google Chrome](https://www.google.com/intl/pt-BR/chrome/)
 
-[Google Chrome](https://www.google.com/intl/pt-BR/chrome/)
+* [Bitwarden](https://bitwarden.com)
 
-## Bitwarden
+* [VSCodium](https://vscodium.com/)
 
-[Bitwarden](https://bitwarden.com)
+* [Github CLI](https://cli.github.com/)
 
-## VSCodium 
-
-[VSCodium](https://vscodium.com/)
-
-## Github CLI
-
-[Github CLI](https://cli.github.com/)
-
-## Pyenv
-
-[Pyenv](https://github.com/pyenv/pyenv) lets you easily switch between multiple versions of Python.
-It's simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well.
+* [Pyenv](https://github.com/pyenv/pyenv)
