@@ -141,7 +141,7 @@ signal=7
 # The second parameter overrides the mixer selection
 # See the script for details.
 [volume]
-command=~/.config/i3blocks/scripts/volume3
+command=~/.config/i3blocks/scripts/volume
 interval=5
 signal=10
 

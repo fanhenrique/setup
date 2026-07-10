@@ -1,70 +1,104 @@
-#!/bin/bash
-# Copyright (C) 2014 Julien Bonjean <julien@bonjean.info>
-# Copyright (C) 2014 Alexander Keller <github@nycroth.com>
+#!/usr/bin/env bash
 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+STEP=5%
+SIGNAL=10
 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-#------------------------------------------------------------------------
-
-# The second parameter overrides the mixer selection
-# For PulseAudio users, use "pulse"
-# For Jack/Jack2 users, use "jackplug"
-# For ALSA users, you may use "default" for your primary card
-# or you may use hw:# where # is the number of the card desired
-MIXER="default"
-[ -n "$(lsmod | grep pulse)" ] && MIXER="pulse"
-[ -n "$(lsmod | grep jack)" ] && MIXER="jackplug"
-MIXER="${2:-$MIXER}"
-echo "$MIXER"
-# The instance option sets the control to report and configure
-# This defaults to the first control of your selected mixer
-# For a list of the available, use `amixer -D $Your_Mixer scontrols`
-SCONTROL="${BLOCK_INSTANCE:-$(amixer -D $MIXER scontrols |
-                  sed -n "s/Simple mixer control '\([A-Za-z ]*\)',0/\1/p" |
-                  head -n1
-                )}"
-
-# The first parameter sets the step to change the volume by (and units to display)
-# This may be in in % or dB (eg. 5% or 3dB)
-STEP="${1:-5%}"
-
-#------------------------------------------------------------------------
-
-capability() { # Return "Capture" if the device is a capture device
-  amixer -D $MIXER get $SCONTROL |
-    sed -n "s/  Capabilities:.*cvolume.*/Capture/p"
+refresh() {
+    pkill -RTMIN+$SIGNAL i3blocks >/dev/null 2>&1
 }
 
-volume() {
-  amixer -D $MIXER get $SCONTROL $(capability)
+toggle_sink() {
+    mapfile -t SINKS < <(pactl list short sinks | awk '{print $2}')
+
+    (( ${#SINKS[@]} <= 1 )) && return
+
+    CURRENT=$(pactl get-default-sink)
+
+    NEXT=0
+    for i in "${!SINKS[@]}"; do
+        if [[ "${SINKS[$i]}" == "$CURRENT" ]]; then
+            NEXT=$(( (i + 1) % ${#SINKS[@]} ))
+            break
+        fi
+    done
+
+    NEW="${SINKS[$NEXT]}"
+
+    pactl set-default-sink "$NEW"
+
+    # Move todos os streams para o novo sink
+    while read -r ID _; do
+        pactl move-sink-input "$ID" "$NEW"
+    done < <(pactl list short sink-inputs)
 }
 
-format() {
-  perl_filter='if (/.*\[(\d+%)\] (\[(-?\d+.\d+dB)\] )?\[(on|off)\]/)'
-  perl_filter+='{CORE::say $4 eq "off" ? "MUTE" : "'
-  # If dB was selected, print that instead
-  perl_filter+=$([[ $STEP = *dB ]] && echo '$3' || echo '$1')
-  perl_filter+='"; exit}'
-  perl -ne "$perl_filter"
+get_sink_description() {
+    local sink="$1"
+
+    pactl list sinks |
+    awk -v sink="$sink" '
+        $1=="Name:" && $2==sink {found=1}
+        found && $1=="Description:" {
+            $1=""
+            sub(/^ /,"")
+            print
+            exit
+        }
+    '
 }
 
-#------------------------------------------------------------------------
+short_name() {
+    local name="$1"
 
-case $BLOCK_BUTTON in
-  3) amixer -q -D $MIXER sset $SCONTROL $(capability) toggle ;;  # right click, mute/unmute
-  4) amixer -q -D $MIXER sset $SCONTROL $(capability) ${STEP}+ unmute ;; # scroll up, increase
-  5) amixer -q -D $MIXER sset $SCONTROL $(capability) ${STEP}- unmute ;; # scroll down, decrease
+    case "$name" in
+        *"Built-in"*)
+            echo "Interno"
+            ;;
+        *"USB"*)
+            echo "USB"
+            ;;
+        *"HDMI"*|*"DisplayPort"*)
+            echo "HDMI"
+            ;;
+        *)
+            # Retorna apenas a primeira palavra
+            echo "$name" | awk '{print $1}'
+            ;;
+    esac
+}
+
+case "$BLOCK_BUTTON" in
+    1)
+        pactl set-sink-mute @DEFAULT_SINK@ toggle
+        refresh
+        ;;
+    3)
+        toggle_sink
+
+        refresh
+        ;;
+    4)
+        pactl set-sink-volume @DEFAULT_SINK@ +"$STEP"
+        pactl set-sink-mute @DEFAULT_SINK@ 0
+        refresh
+        ;;
+    5)
+        pactl set-sink-volume @DEFAULT_SINK@ -"${STEP}"
+        pactl set-sink-mute @DEFAULT_SINK@ 0
+        refresh
+        ;;
 esac
 
-volume | format
+CURRENT=$(pactl get-default-sink)
+
+OUTPUT=$(get_sink_description "$CURRENT")
+OUTPUT=$(short_name "$OUTPUT")
+
+VOLUME=$(pactl get-sink-volume @DEFAULT_SINK@ | awk 'NR==1 {print $5}')
+MUTED=$(pactl get-sink-mute @DEFAULT_SINK@ | awk '{print $2}')
+
+if [[ "$MUTED" == "yes" ]]; then
+    printf "<span foreground='#ff0000'>%s MUTE</span>" "$OUTPUT"
+else
+    echo "$OUTPUT $VOLUME"
+fi
