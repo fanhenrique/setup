@@ -148,6 +148,8 @@ signal=10
 
 [microphone]
 command=~/.config/i3blocks/scripts/microphone
+interval=5
+signal=11
 
 # Key indicators
 #

@@ -1,24 +1,105 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-SOURCE=$(pactl get-default-source)
+STEP=5%
+SIGNAL=11
+
+refresh() {
+    pkill -RTMIN+$SIGNAL i3blocks >/dev/null 2>&1
+}
+
+toggle_source() {
+    mapfile -t SOURCES < <(pactl list short sources | awk '$2 !~ /\.monitor$/ {print $2}')
+
+    (( ${#SOURCES[@]} <= 1 )) && return
+
+    CURRENT=$(pactl get-default-source)
+
+    NEXT=0
+    for i in "${!SOURCES[@]}"; do
+        if [[ "${SOURCES[$i]}" == "$CURRENT" ]]; then
+            NEXT=$(( (i + 1) % ${#SOURCES[@]} ))
+            break
+        fi
+    done
+
+    NEW="${SOURCES[$NEXT]}"
+
+    pactl set-default-source "$NEW"
+
+    # Move todas as gravações para o novo microfone
+    while read -r ID _; do
+        pactl move-source-output "$ID" "$NEW"
+    done < <(pactl list short source-outputs)
+}
+
+get_source_description() {
+    local source="$1"
+
+    pactl list sources |
+    awk -v source="$source" '
+        $1=="Name:" && $2==source {found=1}
+        found && $1=="Description:" {
+            $1=""
+            sub(/^ /,"")
+            print
+            exit
+        }
+    '
+}
+
+short_name() {
+    local name="$1"
+
+    case "$name" in
+        *"Built-in"*)
+            echo "Interno"
+            ;;
+        *"USB"*)
+            echo "USB"
+            ;;
+        *"Webcam"*|*"Camera"*)
+            echo "Webcam"
+            ;;
+        *"Bluetooth"*)
+            echo "BT"
+            ;;
+        *)
+            echo "$name" | awk '{print $1}'
+            ;;
+    esac
+}
 
 case "$BLOCK_BUTTON" in
-    1) pactl set-source-volume "$SOURCE" +5%;;
-    2) pactl set-source-mute "$SOURCE" toggle;;
-    3)pactl set-source-volume "$SOURCE" -5%;;
+    1)
+        pactl set-source-mute @DEFAULT_SOURCE@ toggle
+        refresh
+        ;;
+    3)
+        toggle_source
+        refresh
+        ;;
+    4)
+        pactl set-source-volume @DEFAULT_SOURCE@ +"$STEP"
+        pactl set-source-mute @DEFAULT_SOURCE@ 0
+        refresh
+        ;;
+    5)
+        pactl set-source-volume @DEFAULT_SOURCE@ -"${STEP}"
+        pactl set-source-mute @DEFAULT_SOURCE@ 0
+        refresh
+        ;;
 esac
 
+CURRENT=$(pactl get-default-source)
 
-STATE=$(pactl get-source-mute "$SOURCE" | awk '{print $2}')
-VOLUME=$(pactl get-source-volume "$SOURCE" | awk '{print $5}' | head -n1 | tr -d '%')
+INPUT=$(get_source_description "$CURRENT")
+INPUT=$(short_name "$INPUT")
 
+VOLUME=$(pactl get-source-volume @DEFAULT_SOURCE@ | awk 'NR==1 {print $5}')
+MUTED=$(pactl get-source-mute @DEFAULT_SOURCE@ | awk '{print $2}')
 
-if [ "$STATE" = "yes" ]; then
-	    echo "MIC off"
-    	echo "MIC off"
-    	echo "#FF0000"
+if [[ "$MUTED" == "yes" ]]; then
+    printf "<span foreground='#ff0000'>%s MUTE</span>" "$INPUT"
 else
-    	echo "MIC $VOLUME%"
-    	echo "MIC $VOLUME%"
-	echo "#FFFFFF"
+    echo "$INPUT $VOLUME"
 fi
