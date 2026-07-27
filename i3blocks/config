@@ -41,8 +41,13 @@ interval=05
 [cpu_usage]
 label=CPU
 min_width=CPU: 100%
-interval=5
+interval=1
 #separator=false
+
+[cpu]
+command=~/.config/i3blocks/scripts/cpu
+signal=4
+interval=5
 
 # [load_average]
 # interval=10

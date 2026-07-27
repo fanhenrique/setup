@@ -1,0 +1,40 @@
+#!/bin/bash
+
+source "$HOME/.config/i3blocks/scripts/utils/utils"
+source "$HOME/.config/i3blocks/scripts/utils/expandable"
+
+STATE_FILE="/tmp/i3blocks-cpu"
+SIGNAL=4
+
+case "$BLOCK_BUTTON" in
+    1) expandable_start "$STATE_FILE" "$SIGNAL" ;;
+    3) expandable_toggle "$STATE_FILE" ;;
+esac
+
+# cpu=$(LC_ALL=C mpstat 1 1 | awk '$2=="all"{printf "%.0f",100-$NF}')
+
+# cpu=$(top -bn1 | awk '/Cpu\(s\)/ {print 100-$8}')
+
+
+read -r cpu user nice system idle iowait irq softirq steal _ < /proc/stat
+total1=$((user + nice + system + idle + iowait + irq + softirq + steal))
+idle1=$((idle + iowait))
+
+sleep 0.1
+
+read -r cpu user nice system idle iowait irq softirq steal _ < /proc/stat
+total2=$((user + nice + system + idle + iowait + irq + softirq + steal))
+idle2=$((idle + iowait))
+
+total=$((total2 - total1))
+idle=$((idle2 - idle1))
+
+cpu=$(awk "BEGIN { printf \"%.2f\", 100 * ($total - $idle) / $total }")
+
+[ -z "$cpu" ] && cpu=0
+
+if expandable "$STATE_FILE"; then
+    printf "<b>CPU</b> %s %s%%\n" "$(ramp "$cpu")" "$cpu"
+else
+    printf "<b>CPU</b> %s\n" "$(ramp "$cpu")"
+fi
