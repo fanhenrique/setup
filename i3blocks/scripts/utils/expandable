@@ -1,7 +1,10 @@
 #!/bin/bash
 
+EXPANDABLE_DIR="/tmp/i3blocks/expandable"
+
+mkdir -p "$EXPANDABLE_DIR"
+
 EXPANSION_TIME=5
-EXPANSION_TIME_LIMIT=60
 
 expandable_toggle() {
     local state_file="$1"

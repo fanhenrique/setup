@@ -3,20 +3,21 @@
 source "$HOME/.config/i3blocks/scripts/utils/utils"
 source "$HOME/.config/i3blocks/scripts/utils/expandable"
 
-STATE_FILE="/tmp/i3blocks-memory"
+EXPANDABLE_FILE="$EXPANDABLE_DIR/memory"
+
 SIGNAL=5
 
 # toggle mode by clicking
 case "$BLOCK_BUTTON" in
-    1) expandable_start "$STATE_FILE" "$SIGNAL";;
-    3) expandable_toggle "$STATE_FILE";;
+    1) expandable_start "$EXPANDABLE_FILE" "$SIGNAL";;
+    3) expandable_toggle "$EXPANDABLE_FILE";;
 esac
 
 mem=$(free | awk '/Mem:/ {printf "%.0f", $3/$2*100}')
 swap=$(free | awk '/Swap:/ {if ($2 > 0) printf "%.0f", $3/$2*100; else print 0}')
 
 
-if expandable "$STATE_FILE"; then
+if expandable "$EXPANDABLE_FILE"; then
     printf "<b>RAM</b> %s %s%% <b>SWAP</b> %s %s%%\n" \
         "$(ramp "$mem")" "$mem" \
         "$(ramp "$swap")" "$swap"
