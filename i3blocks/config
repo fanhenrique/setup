@@ -33,21 +33,10 @@ markup=pango
 command=date '+%d/%m/%Y %H:%M'
 interval=05
 
-
-# CPU usage
-#
-# The script may be called with -w and -c switches to specify thresholds,
-# see the script for details.
-[cpu_usage]
-label=CPU
-min_width=CPU: 100%
-interval=1
-#separator=false
-
 [cpu]
 command=~/.config/i3blocks/scripts/cpu
 signal=4
-interval=5
+interval=1
 
 # [load_average]
 # interval=10

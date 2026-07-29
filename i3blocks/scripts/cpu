@@ -3,38 +3,41 @@
 source "$HOME/.config/i3blocks/scripts/utils/utils"
 source "$HOME/.config/i3blocks/scripts/utils/expandable"
 
-STATE_FILE="/tmp/i3blocks-cpu"
+EXPANDABLE_FILE="$EXPANDABLE_DIR/cpu"
+
+CPU_STATE_FILE="$EXPANDABLE_DIR/cpu-state"
+
 SIGNAL=4
 
+# toggle mode by clicking
 case "$BLOCK_BUTTON" in
-    1) expandable_start "$STATE_FILE" "$SIGNAL" ;;
-    3) expandable_toggle "$STATE_FILE" ;;
+    1) expandable_start "$EXPANDABLE_FILE" "$SIGNAL" ;;
+    3) expandable_toggle "$EXPANDABLE_FILE" ;;
 esac
 
-# cpu=$(LC_ALL=C mpstat 1 1 | awk '$2=="all"{printf "%.0f",100-$NF}')
+read -r cpu user nice system idle iowait irq softirq steal guest guest_nice < /proc/stat
 
-# cpu=$(top -bn1 | awk '/Cpu\(s\)/ {print 100-$8}')
+total=$((user + nice + system + idle + iowait + irq + softirq + steal))
+idle_total=$((idle + iowait))
 
+usage="0.0"
 
-read -r cpu user nice system idle iowait irq softirq steal _ < /proc/stat
-total1=$((user + nice + system + idle + iowait + irq + softirq + steal))
-idle1=$((idle + iowait))
+if [[ -f "$CPU_STATE_FILE" ]]; then
+    read -r last_total last_idle < "$CPU_STATE_FILE"
 
-sleep 0.1
+    dt=$((total - last_total))
+    di=$((idle_total - last_idle))
 
-read -r cpu user nice system idle iowait irq softirq steal _ < /proc/stat
-total2=$((user + nice + system + idle + iowait + irq + softirq + steal))
-idle2=$((idle + iowait))
+    if (( dt > 0 )); then
+        usage=$(awk -v dt="$dt" -v di="$di" \
+            'BEGIN { printf "%.1f", ((dt - di) / dt) * 100 }')
+    fi
+fi
 
-total=$((total2 - total1))
-idle=$((idle2 - idle1))
+printf "%s %s\n" "$total" "$idle_total" > "$CPU_STATE_FILE"
 
-cpu=$(awk "BEGIN { printf \"%.2f\", 100 * ($total - $idle) / $total }")
-
-[ -z "$cpu" ] && cpu=0
-
-if expandable "$STATE_FILE"; then
-    printf "<b>CPU</b> %s %s%%\n" "$(ramp "$cpu")" "$cpu"
+if expandable "$EXPANDABLE_FILE"; then
+    printf "<b>CPU</b> %s %4.1f%%\n" "$(ramp "$usage")" "$usage"
 else
-    printf "<b>CPU</b> %s\n" "$(ramp "$cpu")"
+    printf "<b>CPU</b> %s\n" "$(ramp "$usage")"
 fi
