@@ -3,7 +3,7 @@
 source "$HOME/.config/i3blocks/scripts/utils/utils"
 source "$HOME/.config/i3blocks/scripts/utils/expandable"
 
-EXPANDABLE_FILE="$EXPANDABLE_DIR/filesystem"
+EXPAND_STATE_FILE="$EXPAND_STATE_DIR/filesystem"
 
 SIGNAL=6
 
@@ -12,6 +12,13 @@ PARTITIONS=(
     "/home"
 )
 
+case "$BLOCK_BUTTON" in
+    1)
+        expand_state_begin "$EXPAND_STATE_FILE" "$SIGNAL"
+        double_click "$EXPAND_STATE_FILE" "$SIGNAL" expand_state_toggle
+        ;;
+esac
+
 get_fs_info() {
     df -hP "$1" 2>/dev/null | awk 'NR==2 {
         gsub("%","",$5)
@@ -19,17 +26,11 @@ get_fs_info() {
     }'
 }
 
-case "$BLOCK_BUTTON" in
-    1) expandable_start "$EXPANDABLE_FILE" "$SIGNAL";;
-    3) expandable_toggle "$EXPANDABLE_FILE";;
-esac
-
 output=""
-
 for partition in "${PARTITIONS[@]}"; do
     read -r used size percent <<<"$(get_fs_info "$partition")"
 
-    if expandable "$EXPANDABLE_FILE"; then
+    if expand_state_is_active "$EXPAND_STATE_FILE"; then
         output+="${output:+ }<b>$partition</b> $(ramp "$percent") $percent% ($used/$size)"
     else
         output+="${output:+ }<b>$partition</b> $(ramp "$percent")"

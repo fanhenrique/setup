@@ -1,66 +1,124 @@
 #!/bin/bash
 
-EXPANDABLE_DIR="/tmp/i3blocks/expandable"
+readonly EXPAND_STATE_DIR="/tmp/i3blocks/expandable"
+readonly EXPAND_STATE_PERMANENT="perm"
 
-mkdir -p "$EXPANDABLE_DIR"
+readonly EXPAND_STATE_DURATION=5
+readonly DOUBLE_CLICK_TIME=300 # ms
 
-EXPANSION_TIME=5
+mkdir -p "$EXPAND_STATE_DIR"
 
-expandable_toggle() {
-    local state_file="$1"
-
-    if expandable "$state_file"; then
-        rm -f "$state_file"
-    else
-        printf "perm\n" > "$state_file"
-    fi
+_expand_state_read() {
+    read -r REPLY < "$1"
 }
 
-expandable_start() {
-    local state_file="$1"
-    local signal="$2"
-    local expand_time="${3:-$EXPANSION_TIME}"
-
-    if expandable "$state_file"; then
-        rm -f "$state_file"
-        return
-    fi
-
-    local expires=$(( $(date +%s) + expand_time ))
-
-    printf "%s\n" "$expires" > "$state_file"
-
-    (
-        sleep "$expand_time"
-
-        [[ -f "$state_file" ]] || exit 0
-
-        local state
-        read -r state < "$state_file"
-
-        # Outro clique alterou o estado.
-        [[ "$state" == "$expires" ]] || exit 0
-
-        rm -f "$state_file"
-
-        pkill -RTMIN+"$signal" i3blocks >/dev/null 2>&1
-    ) >/dev/null 2>&1 &
+_expand_state_write() {
+    printf "%s\n" "$2" > "$1"
 }
 
-expandable() {
+expand_state_refresh() {
+    pkill -RTMIN+"$1" i3blocks >/dev/null 2>&1
+}
+
+expand_state_is_active() {
     local state_file="$1"
+    local now state
 
     [[ -f "$state_file" ]] || return 1
 
-    local state
-    read -r state < "$state_file"
+    _expand_state_read "$state_file"
+    state="$REPLY"
 
-    [[ "$state" == "perm" ]] && return 0
+    [[ "$state" == "$EXPAND_STATE_PERMANENT" ]] && return 0
 
-    if (( $(date +%s) < state )); then
+    now=$(date +%s)
+
+    if (( now < state )); then
         return 0
     fi
 
     rm -f "$state_file"
     return 1
+}
+
+expand_state_toggle() {
+    local state_file="$1"
+
+    if expand_state_is_active "$state_file"; then
+        rm -f "$state_file"
+    else
+        _expand_state_write "$state_file" "$EXPAND_STATE_PERMANENT"
+    fi
+}
+
+expand_state_begin() {
+    local state_file="$1"
+    local signal="$2"
+    local duration="${3:-$EXPAND_STATE_DURATION}"
+
+    local now expires
+
+    if expand_state_is_active "$state_file"; then
+        rm -f "$state_file"
+        return
+    fi
+
+    now=$(date +%s)
+    expires=$((now + duration))
+
+    _expand_state_write "$state_file" "$expires"
+
+    (
+        sleep "$duration"
+
+        [[ -f "$state_file" ]] || exit 0
+
+        _expand_state_read "$state_file"
+
+        [[ "$REPLY" == "$expires" ]] || exit 0
+
+        rm -f "$state_file"
+
+        expand_state_refresh "$signal"
+    ) >/dev/null 2>&1 &
+}
+
+double_click() {
+    local click_id="$1"
+    local signal="$2"
+    local callback="$3"
+
+    local click_file="${click_id}.click"
+    local now last
+
+    now=$(date +%s%3N)
+
+    if [[ -f "$click_file" ]]; then
+        _expand_state_read "$click_file"
+        last="$REPLY"
+
+        if (( now - last <= DOUBLE_CLICK_TIME )); then
+            rm -f "$click_file"
+
+            "$callback" "$click_id"
+
+            expand_state_refresh "$signal"
+            return
+        fi
+    fi
+
+    _expand_state_write "$click_file" "$now"
+
+    (
+        printf -v timeout "0.%03d" "$DOUBLE_CLICK_TIME"
+        sleep "$timeout"
+
+        [[ -f "$click_file" ]] || exit 0
+
+        _expand_state_read "$click_file"
+
+        [[ "$REPLY" == "$now" ]] || exit 0
+
+        rm -f "$click_file"
+    ) >/dev/null 2>&1 &
 }
