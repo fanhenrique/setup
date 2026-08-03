@@ -16,7 +16,7 @@ _expand_state_write() {
     printf "%s\n" "$2" > "$1"
 }
 
-expand_state_refresh() {
+_expand_state_refresh() {
     pkill -RTMIN+"$1" i3blocks >/dev/null 2>&1
 }
 
@@ -41,7 +41,7 @@ expand_state_is_active() {
     return 1
 }
 
-expand_state_toggle() {
+_expand_state_toggle() {
     local state_file="$1"
 
     if expand_state_is_active "$state_file"; then
@@ -51,7 +51,7 @@ expand_state_toggle() {
     fi
 }
 
-expand_state_begin() {
+_expand_state_temporarily() {
     local state_file="$1"
     local signal="$2"
     local duration="${3:-$EXPAND_STATE_DURATION}"
@@ -79,11 +79,11 @@ expand_state_begin() {
 
         rm -f "$state_file"
 
-        expand_state_refresh "$signal"
+        _expand_state_refresh "$signal"
     ) >/dev/null 2>&1 &
 }
 
-double_click() {
+_double_click() {
     local click_id="$1"
     local signal="$2"
     local callback="$3"
@@ -102,7 +102,7 @@ double_click() {
 
             "$callback" "$click_id"
 
-            expand_state_refresh "$signal"
+            _expand_state_refresh "$signal"
             return
         fi
     fi
@@ -121,4 +121,17 @@ double_click() {
 
         rm -f "$click_file"
     ) >/dev/null 2>&1 &
+}
+
+expand_state_on_click() {
+    local state_file="$1"
+    local signal="$2"
+    local double_action="${3:-_expand_state_toggle}"
+
+    case "$BLOCK_BUTTON" in
+        1)
+            _expand_state_temporarily "$state_file" "$signal"
+            _double_click "$state_file" "$signal" "$double_action"
+            ;;
+    esac
 }

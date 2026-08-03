@@ -2,15 +2,12 @@
 
 source "$HOME/.config/i3blocks/scripts/utils/expandable"
 
-EXPANDABLE_FILE="$EXPANDABLE_DIR/network"
+EXPAND_STATE_FILE="$EXPAND_STATE_DIR/network"
 
 SIGNAL=7
 CACHE="/dev/shm/network"
 
-case "$BLOCK_BUTTON" in
-    1) expandable_start "$EXPANDABLE_FILE" "$SIGNAL" ;;
-    3) expandable_toggle "$EXPANDABLE_FILE" ;;
-esac
+expand_state_on_click "$EXPAND_STATE_FILE" "$SIGNAL"
 
 # Use the provided interface, otherwise the device used for the default route.
 if [[ -n $BLOCK_INSTANCE ]]; then
@@ -64,7 +61,7 @@ format_rate() {
     fi
 }
 
-if expandable "$EXPANDABLE_FILE"; then
+if expand_state_is_active "$EXPAND_STATE_FILE"; then
 
     IPADDR=$(ip -4 addr show "$INTERFACE" | awk '/inet / {print $2}' | cut -d/ -f1)
 

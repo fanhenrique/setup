@@ -7,12 +7,7 @@ EXPAND_STATE_FILE="$EXPAND_STATE_DIR/memory"
 
 SIGNAL=5
 
-case "$BLOCK_BUTTON" in
-    1)
-        expand_state_begin "$EXPAND_STATE_FILE" "$SIGNAL"
-        double_click "$EXPAND_STATE_FILE" "$SIGNAL" expand_state_toggle
-        ;;
-esac
+expand_state_on_click "$EXPAND_STATE_FILE" "$SIGNAL"
 
 read -r mem swap < <(
     free | awk '
