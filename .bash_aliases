@@ -8,13 +8,15 @@ alias bat="batcat"
 alias xc="xclip -in -selection clipboard"   # Copy
 alias xv="xclip -out -selection clipboard"  # Paste
 
-# Depends on the installation of the eza package
-alias ls="eza"
+# Depends on the installation of the exa package
+alias ls="exa"
 
 alias ll='ls -l'
 alias la='ls -la'
 
 alias ..="cd .."
+
+alias cp="cp -v"
 
 alias update="sudo apt update"
 alias upgrade="sudo apt upgrade"
