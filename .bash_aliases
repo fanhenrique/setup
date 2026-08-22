@@ -32,3 +32,5 @@ alias diff="diff --color='auto'"
 alias filesize="du -sh * | sort -h"
 
 alias weather="curl https://wttr.in/"
+
+alias code="flatpak run com.vscodium.codium"
