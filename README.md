@@ -103,12 +103,19 @@ See Arch wiki for more information: https://wiki.archlinux.org/title/GTK
 
 ### GTK 3
 
-Copy the [`gtk-3.0/settings.ini`](./gtk-3.0/settings.ini) directory to `$HOME/.config/`
+Copy the [`gtk-3.0/settings.ini`](./gtk-3.0/settings.ini) directory to `$HOME/.config/gtk-3.0`
 
+```bash 
+cp ./gtk-3.0/settings.ini $HOME/.config/gtk-3.0/
+```
 
 ### GTK 4
 
-Copy the [`gtk-4.0/settings.ini`](./gtk-4.0/settings.ini) directory to `$HOME/.config/`
+Copy the [`gtk-4.0/settings.ini`](./gtk-4.0/settings.ini) directory to `$HOME/.config/gtk-4.0`
+
+```bash 
+cp ./gtk-4.0/settings.ini $HOME/.config/gtk-4.0/
+```
 
 ## VSCodium Settings
 
