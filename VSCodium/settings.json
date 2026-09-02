@@ -1,5 +1,10 @@
 {
     "editor.minimap.enabled": false,
+    "workbench.editorAssociations": {
+        "{git,gitlens,chat-editing-snapshot-text-model,copilot,git-graph,git-graph-3}:/**/*.qrc": "default",
+        "*.qrc": "qt-core.qrcEditor"
+    },
+    "qt-core.showWelcomePageOnActivation": false,
     "[quarto]": {
         "editor.wordWrap": "on",
         "editor.quickSuggestions": {
@@ -13,9 +18,9 @@
         "editor.unicodeHighlight.ambiguousCharacters": false,
         "editor.unicodeHighlight.invisibleCharacters": false
     },
-    "cSpell.language": "en,pt,pt-BR",
     "editor.cursorStyle": "block",
     "editor.cursorBlinking": "smooth",
     "editor.cursorSmoothCaretAnimation": "on",
+    "cSpell.language": "en,pt-BR",
     "cSpell.enabled": true
 }
