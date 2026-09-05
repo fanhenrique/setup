@@ -46,7 +46,6 @@ include ~/.config/i3/media.conf
 include ~/.config/i3/navigation.conf
 include ~/.config/i3/borders.conf
 include ~/.config/i3/rofi.conf
-include ~/.config/i3/autostart.conf
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
