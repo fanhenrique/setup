@@ -22,5 +22,8 @@
     "editor.cursorBlinking": "smooth",
     "editor.cursorSmoothCaretAnimation": "on",
     "cSpell.language": "en,pt-BR",
-    "cSpell.enabled": true
+    "cSpell.enabled": true,
+    "files.associations": {
+        "*.conf": "shellscript"
+    },
 }

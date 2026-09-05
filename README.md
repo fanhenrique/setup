@@ -119,9 +119,9 @@ cp ./gtk-4.0/settings.ini $HOME/.config/gtk-4.0/
 
 ## VSCodium Settings
 
-Copy the [`VSCodium/settings.json`](settings.json) file
-and [`VSCodium/keybindings.json`](keybindings.json) file
-to `$HOME/.config/VSCodium/User` directory.
+Copy the [`settings.json`](./VSCodium/settings.json) file
+and [`keybindings.json`](./VSCodium/keybindings.json) file
+to `$HOME/.var/app/com.vscodium.codium/config/VSCodium/User` directory.
 
 ## Blue filter
 
