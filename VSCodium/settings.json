@@ -21,9 +21,11 @@
     "editor.cursorStyle": "block",
     "editor.cursorBlinking": "smooth",
     "editor.cursorSmoothCaretAnimation": "on",
+    "editor.fontSize": 14,
     "cSpell.language": "en,pt-BR",
     "cSpell.enabled": true,
     "files.associations": {
         "*.conf": "shellscript"
     },
+    "window.zoomLevel": -0.4,
 }
