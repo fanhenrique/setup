@@ -37,8 +37,6 @@ set $binding_text #d9d9d9
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 font pango:DejaVu Sans Mono 10
 
-exec_always --no-startup-id ~/.config/polybar/launch.sh
-
 include ~/.config/i3/windows.conf
 include ~/.config/i3/bar.conf
 include ~/.config/i3/resize.conf
