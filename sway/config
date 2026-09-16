@@ -7,8 +7,11 @@ set $mod Mod4
 
 # Your preferred terminal emulator
 set $term gnome-termianal
+
 # Your preferred application launcher
-set $menu wmenu-run
+set $menu rofi -show drun
+set $menu_window rofi -show window
+set $menu_ssh rofi -show ssh
 
 # Status Bar
 exec_always pkill waybar; waybar
@@ -73,6 +76,8 @@ include ~/.config/sway/resize.conf
 
     # Start your launcher
     bindsym $mod+d exec $menu
+    bindsym $mod+Tab exec $menu_window
+    bindsym $mod+l exec $menu_ssh
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
