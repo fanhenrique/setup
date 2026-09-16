@@ -6,7 +6,7 @@
 set $mod Mod4
 
 # Your preferred terminal emulator
-set $term gnome-termianal
+set $term gnome-terminal
 
 # Your preferred application launcher
 set $menu rofi -show drun
@@ -14,28 +14,17 @@ set $menu_window rofi -show window
 set $menu_ssh rofi -show ssh
 
 # Status Bar
-exec_always pkill waybar; waybar
+exec waybar
 
 include /etc/sway/config-vars.d/*
 
+include ~/.config/sway/windows.conf
+include ~/.config/sway/monitors.conf
 include ~/.config/sway/move.conf
 include ~/.config/sway/layout.conf
-include ~/.config/sway/workspaes.conf
+include ~/.config/sway/workspaces.conf
 include ~/.config/sway/resize.conf
-
-### Output configuration
-#
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-# This is commented in Debian, because the Sway wallpaper files are in a separate
-# package `sway-backgrounds`. Installing this package drops a config file to
-# /etc/sway/config.d/
-# output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-#
-# Example configuration:
-#
-output HDMI-A-1 resolution 1920x1080 position 1920,0
-#
-# You can get the names of your outputs by running: swaymsg -t get_outputs
+include ~/.config/sway/borders.conf
 
 ### Idle configuration
 #
@@ -78,13 +67,6 @@ output HDMI-A-1 resolution 1920x1080 position 1920,0
     bindsym $mod+d exec $menu
     bindsym $mod+Tab exec $menu_window
     bindsym $mod+l exec $menu_ssh
-
-    # Drag floating windows by holding down $mod and left mouse button.
-    # Resize them with right mouse button + $mod.
-    # Despite the name, also works for non-floating windows.
-    # Change normal to inverse to use left mouse button for resizing and right
-    # mouse button for dragging.
-    floating_modifier $mod normal
 
     # Reload the configuration file
     bindsym $mod+Shift+c reload
