@@ -23,6 +23,7 @@ include ~/.config/sway/workspaces.conf
 include ~/.config/sway/resize.conf
 include ~/.config/sway/borders.conf
 include ~/.config/sway/applications.conf
+include ~/.config/sway/media.conf
 
 ### Idle configuration
 #
