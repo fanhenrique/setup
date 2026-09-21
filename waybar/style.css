@@ -1,13 +1,17 @@
+@import url("./css/colors.css");
+@import url("./css/workspaces.css");
+
 * {
     /* `otf-font-awesome` is required to be installed for icons */
     font-family: FontAwesome, Roboto, Helvetica, Arial, sans-serif;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight: bold;
+    color: @text-color;
 }
 
 window#waybar {
-    background-color: rgba(43, 48, 59, 0.5);
-    border-bottom: 3px solid rgba(100, 114, 125, 0.5);
-    color: #ffffff;
+    background-color: @background-color;
+    /* border-bottom: 3px solid rgba(100, 114, 125, 0.5); */
     transition-property: background-color;
     transition-duration: .5s;
 }
@@ -45,32 +49,10 @@ button {
 /* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
 button:hover {
     background: inherit;
-    box-shadow: inset 0 -3px #ffffff;
+    /* box-shadow: inset 0 -3px #ffffff; */
 }
 
-/* you can set a style on hover for any module like this */
-#pulseaudio:hover {
-    background-color: #a37800;
-}
 
-#workspaces button {
-    padding: 0 5px;
-    background-color: transparent;
-    color: #ffffff;
-}
-
-#workspaces button:hover {
-    background: rgba(0, 0, 0, 0.2);
-}
-
-#workspaces button.focused {
-    background-color: #64727D;
-    box-shadow: inset 0 -3px #ffffff;
-}
-
-#workspaces button.urgent {
-    background-color: #eb4d4b;
-}
 
 #mode {
     background-color: #64727D;
@@ -90,10 +72,12 @@ button:hover {
 #custom-media,
 #tray,
 #mode,
-#idle_inhibitor,
 #scratchpad,
 #power-profiles-daemon,
 #mpd {
+    padding: 0 2px;
+}
+
 
 /* clock */
 tooltip {
@@ -184,13 +168,13 @@ label:focus {
 }
 
 #pulseaudio {
-    background-color: #f1c40f;
-    color: #000000;
+    /* background-color: #f1c40f; */
+    color: #ffffff;
 }
 
-#pulseaudio.muted {
-    background-color: #90b1b1;
-    color: #2a5c45;
+#pulseaudio.in.source-muted,
+#pulseaudio.out.sink-muted {
+    background-color: #964B00;
 }
 
 #wireplumber {
@@ -225,9 +209,9 @@ label:focus {
 }
 
 #tray {
-    background-color: #2980b9;
+    background-color: @background-color;
 }
-
+ 
 #tray > .passive {
     -gtk-icon-effect: dim;
 }
@@ -235,15 +219,6 @@ label:focus {
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
     background-color: #eb4d4b;
-}
-
-#idle_inhibitor {
-    background-color: #2d3436;
-}
-
-#idle_inhibitor.activated {
-    background-color: #ecf0f1;
-    color: #2d3436;
 }
 
 #mpd {
@@ -272,6 +247,28 @@ label:focus {
 }
 
 #keyboard-state {
+    padding: 0;
+    margin: 0;
+}
+
+#keyboard-state > label {
+    padding: 0 5px;
+}
+
+#keyboard-state > label:not(.locked) {
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    font-size: 0;
+    opacity: 0;
+}
+
+#keyboard-state > label.locked {
+    opacity: 1;
+    color: @on-color;
+}
+
+/* #keyboard-state {
     background: #97e1ad;
     color: #000000;
     padding: 0 0px;
@@ -285,7 +282,7 @@ label:focus {
 
 #keyboard-state > label.locked {
     background: rgba(0, 0, 0, 0.2);
-}
+} */
 
 #scratchpad {
     background: rgba(0, 0, 0, 0.2);
