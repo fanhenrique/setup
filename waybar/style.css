@@ -142,9 +142,70 @@ label:focus {
     background-color: #000000;
 }
 
-#cpu {
+/* #cpu {
     background-color: #2ecc71;
     color: #000000;
+} */
+
+/* #cpu {
+    background-color: rgba(255, 255, 255, 0.1);
+    min-width: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+} */
+
+/* O fundo terminal mudou para casar com a opacidade da pílula e arredondar a direita */
+/* #cpu.p90 { background: linear-gradient(90deg, #f01800 90%, rgba(255,255,255,0.1) 90%); }
+#cpu.p80:not(.p90) { background: linear-gradient(90deg, #ee4e00 80%, rgba(255,255,255,0.1) 80%); }
+#cpu.p70:not(.p80) { background: linear-gradient(90deg, #ec8300 70%, rgba(255,255,255,0.1) 70%); }
+#cpu.p60:not(.p70) { background: linear-gradient(90deg, #eab700 60%, rgba(255,255,255,0.1) 60%); }
+#cpu.p50:not(.p60) { background: linear-gradient(90deg, #e6e800 50%, rgba(255,255,255,0.1) 50%); }
+#cpu.p40:not(.p50) { background: linear-gradient(90deg, #b0e600 40%, rgba(255,255,255,0.1) 40%); }
+#cpu.p30:not(.p40) { background: linear-gradient(90deg, #7be400 30%, rgba(255,255,255,0.1) 30%); }
+#cpu.p20:not(.p30) { background: linear-gradient(90deg, #46e200 20%, rgba(255,255,255,0.1) 20%); }
+#cpu.p10:not(.p20) { background: linear-gradient(90deg, #13e000 10%, rgba(255,255,255,0.1) 10%); } */
+
+.resource {
+    background-color: rgba(255, 255, 255, 0.1);
+    min-width: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.resource.p90 {
+    background: linear-gradient(90deg, #f01800 90%, rgba(255,255,255,0.1) 90%);
+}
+
+.resource.p80 {
+    background: linear-gradient(90deg, #ee4e00 80%, rgba(255,255,255,0.1) 80%);
+}
+
+.resource.p70 {
+    background: linear-gradient(90deg, #ec8300 70%, rgba(255,255,255,0.1) 70%);
+}
+
+.resource.p60 {
+    background: linear-gradient(90deg, #eab700 60%, rgba(255,255,255,0.1) 60%);
+}
+
+.resource.p50 {
+    background: linear-gradient(90deg, #e6e800 50%, rgba(255,255,255,0.1) 50%);
+}
+
+.resource.p40 {
+    background: linear-gradient(90deg, #b0e600 40%, rgba(255,255,255,0.1) 40%);
+}
+
+.resource.p30 {
+    background: linear-gradient(90deg, #7be400 30%, rgba(255,255,255,0.1) 30%);
+}
+
+.resource.p20 {
+    background: linear-gradient(90deg, #46e200 20%, rgba(255,255,255,0.1) 20%);
+}
+
+.resource.p10 {
+    background: linear-gradient(90deg, #13e000 10%, rgba(255,255,255,0.1) 10%);
 }
 
 #memory {

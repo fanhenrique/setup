@@ -11,7 +11,8 @@
         "sway/window",
         "sway/mode",
         "sway/scratchpad",
-        "custom/media"
+        "custom/media",
+        "sway/window"
     ],
     "modules-center": [
         "clock"
@@ -23,9 +24,11 @@
         "custom/network",
         "power-profiles-daemon",
         "cpu",
+        "custom/cpu",
         "memory",
         "temperature",
         "backlight",
+        "backlight#dp2",
         "keyboard-state",
         "battery",
         "battery#bat2",
@@ -124,10 +127,32 @@
             "on-scroll-down": "shift_down"
         }
     },
-    "cpu": {
-        "format": "{usage}% ",
-        "tooltip": false
+   "cpu": {
+        "format": "CPU {usage}%",
+        "interval": 1,
+        "tooltip": true,
+        // "on-click": "~/.config/waybar/scripts/toggle-cpu-popup.sh",
+        "on-click": "~/.config/waybar/scripts/toggle-cpu-popup.sh {module_x} {module_y} {module_width} {module_height}",
+        "states": {
+            "p10": 10,
+            "p20": 20,
+            "p30": 30,
+            "p40": 40,
+            "p50": 50,
+            "p60": 60,
+            "p70": 70,
+            "p80": 80,
+            "p90": 90
+        }
     },
+    // "custom/cpu": {
+    //     "exec": "~/.config/waybar/scripts/cpu.sh",
+    //     "interval": 1,
+    //     "return-type": "json",
+    //     "tooltip": true,
+    //     "tooltip-on-click": true
+    //     // "on-click": "~/.config/waybar/scripts/cpu-popup.py"
+    // },
     "memory": {
         "format": "{}% "
     },
@@ -136,13 +161,26 @@
         // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
         "critical-threshold": 80,
         // "format-critical": "{temperatureC}°C {icon}",
-        "format": "{temperatureC}°C {icon}",
+        "format": "{temperatureC}°C",
         "format-icons": ["", "", ""]
     },
+    // "backlight": {
+    //     // "device": "acpi_video1",
+    //     "format": "{percent}% {icon}",
+    //     "format-icons": ["", "", "", "", "", "", "", "", ""]
+    // },
     "backlight": {
-        // "device": "acpi_video1",
-        "format": "{percent}% {icon}",
-        "format-icons": ["", "", "", "", "", "", "", "", ""]
+        "device": "ddcci10",
+        "format": "{percent}%",
+        // "on-click": "brightnessctl -d ddcci10 set +5% && pkill -RTMIN+8 waybar",
+        // "on-click-right": "brightnessctl -d ddcci10 set 5%- && pkill -RTMIN+8 waybar"
+    },
+
+    "backlight#dp2": {
+        "device": "ddcci11",
+        "format": "{percent}%",
+        "on-click": "brightnessctl -d ddcci11 set +5% && pkill -RTMIN+9 waybar",
+        "on-click-right": "brightnessctl -d ddcci11 set 5%- && pkill -RTMIN+9 waybar"
     },
     "battery": {
         "states": {
@@ -226,5 +264,5 @@
 			"suspend": "systemctl suspend",
 			"hibernate": "systemctl hibernate"
 		}
-    }
+    }    
 }
