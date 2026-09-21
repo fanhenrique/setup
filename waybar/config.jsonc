@@ -180,33 +180,35 @@
         "power-saver": ""
       }
     },
-    "network": {
-        // "interface": "wlp2*", // (Optional) To force the use of this interface
-        "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}"
+    "custom/network": {
+        "exec": "~/.config/waybar/scripts/network.sh",
+        "interval": 1,
+        "signal": 7,
+        "return-type": "text",
+        "on-click": "~/.config/waybar/scripts/network.sh expandable",
+        "tooltip": false
     },
-    "pulseaudio": {
-        // "scroll-step": 1, // %, can be a float
-        "format": "{volume}% {icon} {format_source}",
-        "format-bluetooth": "{volume}% {icon} {format_source}",
-        "format-bluetooth-muted": " {icon} {format_source}",
-        "format-muted": " {format_source}",
-        "format-source": "{volume}% ",
-        "format-source-muted": "",
-        "format-icons": {
-            "headphone": "",
-            "hands-free": "",
-            "headset": "",
-            "phone": "",
-            "portable": "",
-            "car": "",
-            "default": ["", "", ""]
-        },
-        "on-click": "pavucontrol"
+    "pulseaudio#out": {
+        "target": "sink",
+        "format": "{desc} {volume}%",
+        // "format-muted": "{desc} off",
+        "tooltip": false,
+        "max-volume": 100,
+        "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click-right": "~/.config/waybar/scripts/pulseaudio/toggle-sink-port",
+        "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
+        "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%"
+    },
+    "pulseaudio#in": {
+        "target": "source",
+        "format": "{source_desc} {source_volume}%",
+        // "format-source-muted": "{source_desc} off",
+        "tooltip": false,
+        "max-volume": 100,
+        "on-click": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
+        "on-click-right": "~/.config/waybar/scripts/pulseaudio/toggle-source-port",
+        "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ +5%",
+        "on-scroll-down": "pactl set-source-volume @DEFAULT_SOURCE@ -5%"
     },
     "custom/media": {
         "format": "{icon} {text}",
