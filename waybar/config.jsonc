@@ -188,7 +188,7 @@
         "tooltip": false,
         "max-volume": 100,
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
-        "on-click-right": "~/.config/waybar/scripts/pulseaudio/toggle-sink-port",
+        "on-click-right": "~/.config/waybar/scripts/tooggle-sink-port.sh",
         "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
         "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%"
     },
@@ -199,7 +199,7 @@
         "tooltip": false,
         "max-volume": 100,
         "on-click": "pactl set-source-mute @DEFAULT_SOURCE@ toggle",
-        "on-click-right": "~/.config/waybar/scripts/pulseaudio/toggle-source-port",
+        "on-click-right": "~/.config/waybar/scripts/tooggle-source-port.sh",
         "on-scroll-up": "pactl set-source-volume @DEFAULT_SOURCE@ +5%",
         "on-scroll-down": "pactl set-source-volume @DEFAULT_SOURCE@ -5%"
     },
