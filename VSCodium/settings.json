@@ -22,10 +22,13 @@
     "editor.cursorBlinking": "smooth",
     "editor.cursorSmoothCaretAnimation": "on",
     "editor.fontSize": 14,
+    "editor.formatOnSave": true,
+    "editor.autoIndent": "full",
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.detectIndentation": false,
     "cSpell.language": "en,pt-BR",
     "cSpell.enabled": true,
-    "files.associations": {
-        "*.conf": "shellscript"
-    },
     "window.zoomLevel": -0.4,
+    "markdown-preview-enhanced.previewTheme": "vscode.css"
 }
