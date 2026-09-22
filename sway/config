@@ -11,7 +11,7 @@ set $menu_window rofi -show window
 set $menu_ssh rofi -show ssh
 
 # Status Bar
-exec waybar
+exec ironbar
 
 include /etc/sway/config-vars.d/*
 

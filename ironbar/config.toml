@@ -1,0 +1,105 @@
+position = "top"
+height = 24
+popup_gap = 5
+popup_autohide = true
+
+include = ["power-menu.toml"]
+
+[[start]]
+type = "workspaces"
+
+[[start]]
+type = "focused"
+icon_size = 16
+
+[[center]]
+type = "clock"
+format = "%d/%m %H:%M"
+show_week_numbers = true
+
+# [[end]]
+# type = "script"
+# cmd = "~/.config/ironbar/scripts/cpu.sh"
+# interval = 1000
+# mode = "poll"
+
+# [[end]]
+# type = "script"
+# name = "network-bar"
+# cmd = "bash ~/.config/ironbar/scripts/network.sh"
+# mode = "watch"
+# on_click_left = "bash ~/.config/ironbar/scripts/network.sh toggle"
+
+# [[end]]
+# type = "battery"
+# show_if = "ls /sys/class/power_supply/ | grep --quiet '^BAT'"
+
+[[end]]
+type = "sys_info"
+
+format = ["CPU {cpu_percent}%", "MEM {memory_percent}%", "T {temp_c}°C"]
+
+[end.interval]
+cpu = 1
+memory = 30
+networks = 3
+
+#############################
+# Custom popup network
+#############################
+[[end]]
+type = "custom"
+name = "network"
+class = "network"
+
+[[end.bar]]
+type = "button"
+label = "Network"
+on_click = "popup:toggle"
+
+[[end.popup]]
+type = "box"
+orientation = "vertical"
+
+[[end.popup.widgets]]
+type = "script"
+name = "network-popup"
+cmd = "bash ~/.config/ironbar/scripts/network.sh"
+mode = "watch"
+on_click_left = "bash ~/.config/ironbar/scripts/network.sh toggle"
+
+#############################
+# Tray
+#############################
+[[end]]
+type = "tray"
+
+#############################
+# Power menu
+#############################
+[[end]]
+type = "custom"
+name = "power-menu"
+class = "power-menu"
+
+[[end.bar]]
+type = "button"
+name = "power-btn"
+label = ""
+on_click = "popup:toggle"
+
+[[end.popup]]
+type = "box"
+orientation = "vertical"
+
+[[end.popup.widgets]]
+type = "button"
+class = "power-btn"
+label = "shutdown"
+on_click = "!shutdown now"
+
+[[end.popup.widgets]]
+type = "button"
+class = "power-btn"
+label = "reboot"
+on_click = "!reboot"
