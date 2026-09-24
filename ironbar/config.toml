@@ -1,17 +1,27 @@
 position = "top"
 height = 24
 popup_gap = 5
-popup_autohide = true
+popup_autohide = false
 
 include = ["power-menu.toml"]
 
 [[start]]
 type = "workspaces"
 
+#############################
+# Windows title
+#############################
 [[start]]
 type = "focused"
 icon_size = 16
 
+[start.truncate]
+mode = "middle"
+max_length = 50
+
+#############################
+# Clock and calender
+#############################
 [[center]]
 type = "clock"
 format = "%d/%m %H:%M"
@@ -34,6 +44,9 @@ show_week_numbers = true
 # type = "battery"
 # show_if = "ls /sys/class/power_supply/ | grep --quiet '^BAT'"
 
+#############################
+# System informations
+#############################
 [[end]]
 type = "sys_info"
 
@@ -41,14 +54,13 @@ format = ["CPU {cpu_percent}%", "MEM {memory_percent}%", "T {temp_c}°C"]
 
 [end.interval]
 cpu = 1
-memory = 30
-networks = 3
+memory = 60
 
 #############################
 # Custom popup network
 #############################
 [[end]]
-type = "custom"
+type = "label"
 name = "network"
 class = "network"
 
@@ -59,14 +71,26 @@ on_click = "popup:toggle"
 
 [[end.popup]]
 type = "box"
+class = "popup-network"
 orientation = "vertical"
 
 [[end.popup.widgets]]
 type = "script"
-name = "network-popup"
-cmd = "bash ~/.config/ironbar/scripts/network.sh"
+name = "interface"
+cmd = "printf 'Interface: '; bash ~/.config/ironbar/scripts/network.sh interface"
 mode = "watch"
-on_click_left = "bash ~/.config/ironbar/scripts/network.sh toggle"
+
+[[end.popup.widgets]]
+type = "script"
+name = "ip"
+cmd = "printf 'IP: '; bash ~/.config/ironbar/scripts/network.sh ip"
+mode = "watch"
+
+[[end.popup.widgets]]
+type = "script"
+name = "rate"
+cmd = "bash ~/.config/ironbar/scripts/network.sh rate"
+interval = 1000
 
 #############################
 # Tray
