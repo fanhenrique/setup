@@ -1,17 +1,18 @@
 import Quickshell
 import Quickshell.I3
 import QtQuick
+import ".."
 
 Row {
     required property var monitor
 
     anchors {
         left: parent.left
-        leftMargin: 10
+        leftMargin: 4
         verticalCenter: parent.verticalCenter
     }
 
-    spacing: 8
+    spacing: Theme.spacingWorkspaces
 
     Repeater {
         model: I3.workspaces
@@ -19,24 +20,26 @@ Row {
         delegate: Rectangle {
             required property var modelData
 
-            visible: modelData.monitor === monitor
+            visible: modelData.monitor && monitor
+                     && modelData.monitor.name === monitor.name
 
-            width: visible ? 24 : 0
-            height: 24
-            radius: 4
+            width: visible ? Theme.widthWorkspacesActive : 0            
+            height: Theme.heightWorkspacesActive
+            radius: Theme.radiusWorkspacesActive
 
-            color: modelData.focused
-                ? "#bf616a"
-                : modelData.urgent
-                    ? "#ebcb8b"
-                    : "transparent"
+            color: modelData.focused 
+                ? Theme.focusedWorkspaces 
+                : modelData.urgent 
+                ? Theme.urgentWorkspaces 
+                : Theme.unfocusedWorkspaces 
 
             Text {
                 anchors.centerIn: parent
 
                 text: modelData.number
-                color: "#eceff4"
-                font.pixelSize: 14
+                color: Theme.textColorWorkspaces
+                font.pixelSize: Theme.fontSizeWorkspaces
+                font.bold: Theme.fontBoldWorkspaces
             }
 
             MouseArea {

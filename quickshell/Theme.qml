@@ -9,13 +9,33 @@ QtObject {
     readonly property color warning: "#ebcb8b"
     readonly property color success: "#a3be8c"
 
+    // ############################
+    // Default font
+    // ############################
     readonly property color textColor: '#e4e4e4'
-
-
-    readonly property int fontSize: 14
     readonly property int fontSizeSmall: 12
+    readonly property int fontSize: 14
     readonly property int fontSizeLarge: 16
 
+    // ############################
+    // Workspaces
+    // ############################
+    readonly property int spacingWorkspaces: 0
+    readonly property int widthWorkspacesActive: 28
+    readonly property int heightWorkspacesActive: 28
+    readonly property int radiusWorkspacesActive: 8
+
+    readonly property color textColorWorkspaces: '#e4e4e4'
+    readonly property int fontSizeWorkspaces: 18
+    readonly property bool fontBoldWorkspaces: true
+    
+    readonly property color focusedWorkspaces: '#0079b1'
+    readonly property color urgentWorkspaces: '#bf616a'
+    readonly property color unfocusedWorkspaces: 'transparent'
+
+    // ############################
+    // Bar
+    // ############################
     readonly property int barHeight: 32
     readonly property int workspaceSize: 24
     readonly property int spacing: 8
