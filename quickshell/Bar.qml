@@ -4,12 +4,15 @@ import QtQuick
 import "./components" as Components
 
 PanelWindow {
+    id: root
+
     required property var modelData
 
     property var swayMonitor: I3.monitorFor(modelData)
 
     anchors {
         top: true
+        bottom: false
         left: true
         right: true
     }
@@ -22,16 +25,28 @@ PanelWindow {
         monitor: swayMonitor
     }
 
-    Text {
+    Components.Clock {
         anchors.centerIn: parent
+    }
+    
 
+    Text {
+        anchors {
+            right: tray.left
+            rightMargin: 8
+            verticalCenter: parent.verticalCenter
+        }
 
         text: modelData.name
         color: Theme.textColor
-        font.pixelSize: 14
+        font.pixelSize: Theme.fontSize
     }
 
-    Components.Clock {
+    Components.Tray {
+        id: tray
+
+        panelWindow: root
+
         anchors {
             right: parent.right
             rightMargin: 10

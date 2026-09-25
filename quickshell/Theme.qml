@@ -34,6 +34,14 @@ QtObject {
     readonly property color unfocusedWorkspaces: 'transparent'
 
     // ############################
+    // Tray
+    // ############################
+    readonly property int widthTrayIcons: 16
+    readonly property int heightTrayIcons: 16
+    readonly property int spacingTrayIcons: 8
+
+
+    // ############################
     // Bar
     // ############################
     readonly property int barHeight: 32
