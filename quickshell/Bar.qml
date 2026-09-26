@@ -8,7 +8,22 @@ PanelWindow {
 
     required property var modelData
 
-    property var swayMonitor: I3.monitorFor(modelData)
+    property var swayMonitor: null
+
+    function updateSwayMonitor() {
+        const m = I3.monitorFor(modelData)
+
+        if (m !== swayMonitor) {
+            console.log(
+                "Sway monitor:",
+                modelData.name,
+                "->",
+                m ? m.name : "NULL"
+            )
+
+            swayMonitor = m
+        }
+    }
 
     anchors {
         top: true
@@ -21,14 +36,32 @@ PanelWindow {
 
     color: Theme.background
 
+    Component.onCompleted: {
+        updateSwayMonitor()
+    }
+
+    Connections {
+        target: I3
+
+        function onConnected() {
+            console.log("I3 connected")
+            I3.refreshMonitors()
+            I3.refreshWorkspaces()
+            root.updateSwayMonitor()
+        }
+
+        function onRawEvent(event) {
+            root.updateSwayMonitor()
+        }
+    }
+
     Components.Workspaces {
-        monitor: swayMonitor
+        monitor: root.swayMonitor
     }
 
     Components.Clock {
         anchors.centerIn: parent
     }
-    
 
     Text {
         anchors {
