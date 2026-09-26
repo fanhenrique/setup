@@ -20,6 +20,8 @@ QtObject {
     // ############################
     // Workspaces
     // ############################
+    readonly property int leftMarginWorkspaces: 4
+    readonly property int rightMarginWorkspaces: 4
     readonly property int spacingWorkspaces: 0
     readonly property int widthWorkspacesActive: 28
     readonly property int heightWorkspacesActive: 28

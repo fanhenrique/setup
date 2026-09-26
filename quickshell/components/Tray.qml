@@ -1,13 +1,14 @@
 import QtQuick
 import Quickshell
 import Quickshell.Services.SystemTray
+import ".."
 
 Row {
     id: root
 
     property var panelWindow
 
-    spacing: 6
+    spacing: Theme.spacingTrayIcons
 
     Repeater {
         model: SystemTray.items
@@ -15,8 +16,8 @@ Row {
         delegate: Item {
             required property var modelData
 
-            width: 22
-            height: 22
+            width: Theme.widthTrayIcons
+            height: Theme.heightTrayIcons
 
             Image {
                 anchors.fill: parent

@@ -5,7 +5,7 @@ Text {
     font.pixelSize: 14
 
     function updateClock() {
-        text = Qt.formatDateTime(new Date(), "dd/MM HH:mm:ss")
+        text = Qt.formatDateTime(new Date(), "dd/MM HH:mm")
     }
 
     Timer {
