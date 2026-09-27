@@ -81,33 +81,34 @@ Text {
     }
 
     I3IpcListener {
-        subscriptions: ["window"]
+        subscriptions: ["window", "workspace"]
 
         onIpcEvent: function(event) {
-            if (event.type !== "window")
-                return
+            if (event.type !== "window" && event.type !== "workspace") return
 
             let data
 
             try {
                 data = JSON.parse(event.data)
             } catch (error) {
-                console.log(
-                    "FocusedWindow: event JSON parse error:",
-                    error
-                )
-
+                console.log("FocusedWindow: event JSON parse error:",error)
                 return
             }
 
-            if (
-                data.change !== "focus"
-                && data.change !== "title"
-            )
+            if (event.type === "workspace") {
+                if (data.change === "focus" || data.change === "init") {
+                    root.windowTitle = ""
+                    root.updateFromTree()
+                }
                 return
+            }
+
+            if (data.change !== "focus" && data.change !== "title") return
 
             if (data.container && data.container.name) {
                 root.windowTitle = data.container.name
+            } else {
+                root.windowTitle = ""
             }
         }
     }
