@@ -45,8 +45,10 @@ PanelWindow {
 
         function onConnected() {
             console.log("I3 connected")
+
             I3.refreshMonitors()
             I3.refreshWorkspaces()
+
             root.updateSwayMonitor()
         }
 
@@ -56,7 +58,24 @@ PanelWindow {
     }
 
     Components.Workspaces {
+        id: workspaces
+
         monitor: root.swayMonitor
+    }
+
+    Components.FocusedWindow {
+        id: focusedWindow
+
+        monitor: root.swayMonitor
+
+        anchors {
+            left: workspaces.right
+            leftMargin: 0
+            top: parent.top
+            bottom: parent.bottom
+        }
+
+        width: 500
     }
 
     Components.Clock {
@@ -71,7 +90,9 @@ PanelWindow {
         }
 
         text: modelData.name
+
         color: Theme.textColor
+
         font.pixelSize: Theme.fontSize
     }
 
