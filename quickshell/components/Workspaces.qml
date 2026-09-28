@@ -1,7 +1,7 @@
 import Quickshell
 import Quickshell.I3
 import QtQuick
-import ".."
+import".."
 
 Row {
     id: root
@@ -10,12 +10,11 @@ Row {
 
     anchors {
         left: parent.left
-        leftMargin: Theme.leftMarginWorkspaces
-        rightMargin: Theme.rightMarginWorkspaces
+        leftMargin: Theme.workspaces.leftMargin
         verticalCenter: parent.verticalCenter
     }
 
-    spacing: Theme.spacingWorkspaces
+    spacing: Theme.workspaces.spacing
 
     Repeater {
         model: I3.workspaces
@@ -27,25 +26,25 @@ Row {
                      && root.monitor
                      && modelData.monitor.name === root.monitor.name
 
-            width: visible ? Theme.widthWorkspacesActive : 0
-            height: Theme.heightWorkspacesActive
-            radius: Theme.radiusWorkspacesActive
+            width: visible ? Theme.workspaces.widthFocused : 0
+            height: Theme.workspaces.heightFocused
+            radius: Theme.workspaces.radiusFocused
 
             color: modelData.focused
-                ? Theme.focusedWorkspaces
+                ? Theme.workspaces.focused
                 : modelData.urgent
-                ? Theme.urgentWorkspaces
-                : Theme.unfocusedWorkspaces
+                ? Theme.workspaces.urgent
+                : Theme.workspaces.unfocused
 
             Text {
                 anchors.centerIn: parent
 
                 text: modelData.number
 
-                color: Theme.textColorWorkspaces
+                color: Theme.workspaces.textColor
 
-                font.pixelSize: Theme.fontSizeWorkspaces
-                font.bold: Theme.fontBoldWorkspaces
+                font.pixelSize: Theme.workspaces.fontSize
+                font.bold: Theme.workspaces.fontBold
             }
 
             MouseArea {

@@ -11,13 +11,25 @@ Text {
 
     property string windowTitle: ""
 
+    anchors {
+        left: workspaces.right
+        leftMargin: Theme.focusedWindow.leftMargin
+        top: parent.top
+        bottom: parent.bottom
+    }
+
     text: windowTitle
 
     color: Theme.textColor
     font.pixelSize: Theme.fontSize
-    verticalAlignment: Text.AlignVCenter
+    font.bold: Theme.focusedWindow.fontBold
+
+    width: Theme.focusedWindow.width
+    verticalAlignment: Theme.focusedWindow.verticalAlignment
+    horizontalAlignment: Theme.focusedWindow.horizontalAlignment
+    
     visible: windowTitle.length > 0
-    elide: Text.ElideRight
+    elide: Theme.focusedWindow.elide
 
     function updateFromTree() {
         treeProcess.running = true

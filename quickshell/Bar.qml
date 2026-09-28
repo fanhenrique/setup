@@ -26,15 +26,16 @@ PanelWindow {
     }
 
     anchors {
-        top: true
-        bottom: false
+        top: Theme.bar.position === "top" 
+            ? true : Theme.bar.position === "bottom" ? false : true
+        bottom: Theme.bar.position === "bottom" ? true : false
         left: true
         right: true
     }
 
-    implicitHeight: Theme.barHeight
+    implicitHeight: Theme.bar.height
 
-    color: Theme.background
+    color: Theme.bar.background
 
     Component.onCompleted: {
         updateSwayMonitor()
@@ -65,17 +66,7 @@ PanelWindow {
 
     Components.FocusedWindow {
         id: focusedWindow
-
         monitor: root.swayMonitor
-
-        anchors {
-            left: workspaces.right
-            leftMargin: 0
-            top: parent.top
-            bottom: parent.bottom
-        }
-
-        width: 500
     }
 
     Components.Clock {
@@ -92,7 +83,6 @@ PanelWindow {
         text: modelData.name
 
         color: Theme.textColor
-
         font.pixelSize: Theme.fontSize
     }
 

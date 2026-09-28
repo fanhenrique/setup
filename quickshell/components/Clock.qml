@@ -1,15 +1,18 @@
 import QtQuick
+import ".."
 
 Text {
-    color: "#eceff4"
-    font.pixelSize: 14
+    
+    color: Theme.clock.textColor
+    font.pixelSize: Theme.clock.fontSize
+    font.bold: Theme.clock.fontBold
 
     function updateClock() {
-        text = Qt.formatDateTime(new Date(), "dd/MM HH:mm")
+        text = Qt.formatDateTime(new Date(), Theme.clock.format)
     }
 
     Timer {
-        interval: 1000
+        interval: Theme.clock.interval
         running: true
         repeat: true
 

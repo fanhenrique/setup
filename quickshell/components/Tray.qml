@@ -8,7 +8,7 @@ Row {
 
     property var panelWindow
 
-    spacing: Theme.spacingTrayIcons
+    spacing: Theme.tray.spacing
 
     Repeater {
         model: SystemTray.items
@@ -16,8 +16,8 @@ Row {
         delegate: Item {
             required property var modelData
 
-            width: Theme.widthTrayIcons
-            height: Theme.heightTrayIcons
+            width: Theme.tray.iconWidth
+            height: Theme.tray.iconHeight
 
             Image {
                 anchors.fill: parent
@@ -31,16 +31,11 @@ Row {
             MouseArea {
                 anchors.fill: parent
 
-                acceptedButtons: Qt.LeftButton |
-                                 Qt.MiddleButton |
-                                 Qt.RightButton
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
 
                 onClicked: function(mouse) {
                     if (mouse.button === Qt.LeftButton) {
                         modelData.activate()
-
-                    } else if (mouse.button === Qt.MiddleButton) {
-                        modelData.secondaryActivate()
 
                     } else if (mouse.button === Qt.RightButton) {
                         if (modelData.hasMenu) {
