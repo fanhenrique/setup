@@ -40,9 +40,6 @@ Text {
 
         target: root
 
-        popupWidth: 280
-        popupHeight: 300
-
         contentItem: Component {
             Calendar {
                 anchors.fill: parent

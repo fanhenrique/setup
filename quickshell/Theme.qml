@@ -15,6 +15,8 @@ QtObject {
     readonly property color warning: "#ebcb8b"
     readonly property color success: "#a3be8c"
 
+    readonly property color borderColor: "#eceff4"
+
     // ############################
     // Default font
     // ############################
@@ -108,6 +110,58 @@ QtObject {
         readonly property int iconHeight: 20
         readonly property int spacing: 8
     }
+
+    // // ############################
+    // // Component Popup
+    // // ############################
+    readonly property QtObject popup: QtObject {
+        // Gap 
+        readonly property int gap: 15
+        
+        // Color
+        readonly property color color: root.background
+
+        // Padding
+        readonly property int padding: 8
+
+        // Border
+        readonly property int radius: 8
+        readonly property int borderWidth: 2
+        readonly property color borderColor: root.borderColor
+        
+        // Close the popup when clicking outside it
+        readonly property bool grabFocus: true
+    }
+
+    // // ############################
+    // // Component Calendar
+    // // ############################
+    readonly property QtObject calendar: QtObject {
+        readonly property int spacing: 8
+
+        // Month
+        readonly property int monthFontSize: 20
+        readonly property bool monthFontBold: true
+        readonly property color monthTextColor: root.primary
+        
+        // Week
+        readonly property int weekFontSize: 16
+        readonly property bool weekFontBold: true
+        readonly property color weekTextColor: root.primary
+        readonly property int weekSpacing: 0
+        
+        // Day
+        readonly property int dayFontSize: 16
+        readonly property bool dayFontBold: false
+        readonly property color dayTextColor: root.textColor
+        
+        // Today
+        readonly property int todayFontSize: 16
+        readonly property bool todayFontBold: true
+        readonly property color todayTextColor: root.textColor
+
+    }
+
 
     // // ############################
     // // CPU

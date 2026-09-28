@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import ".."
 
 PopupWindow {
     id: root
@@ -7,61 +8,54 @@ PopupWindow {
     required property var target
 
     property alias contentItem: contentLoader.sourceComponent
-
-    property int popupWidth: 300
-    property int popupHeight: 500
-    property int gap: 5
+    property int gap: Theme.popup.gap
+    property int padding: Theme.popup.padding
 
     color: "transparent"
+   
+    implicitWidth: contentLoader.item
+        ? contentLoader.item.implicitWidth + padding * 2
+        : 0
 
-    implicitWidth: popupWidth
-    implicitHeight: popupHeight
+    implicitHeight: contentLoader.item
+        ? contentLoader.item.implicitHeight + padding * 2
+        : 0
 
-
+    // Close the popup when clicking outside it
+    grabFocus: Theme.popup.grabFocus
 
     anchor {
         item: root.target
 
         rect.x: root.target.width / 2
-        rect.y: root.target.height + 15
-
+        rect.y: root.target.height + root.gap
+        
         rect.width: 1
         rect.height: 1
-
+        
         edges: Edges.Top
         gravity: Edges.Bottom
 
         adjustment: PopupAdjustment.All
     }
-
-
+    
     Rectangle {
         anchors.fill: parent
-
-        color: "#3b4252"
-        radius: 6
+        color: Theme.popup.color
+        radius: Theme.popup.radius
 
         border {
-            width: 1
-            color: "#5e6779"
+            width: Theme.popup.borderWidth
+            color: Theme.popup.borderColor
         }
 
         Loader {
             id: contentLoader
-
             anchors.fill: parent
         }
     }
 
     function toggle() {
         visible = !visible
-    }
-
-    function open() {
-        visible = true
-    }
-
-    function close() {
-        visible = false
     }
 }

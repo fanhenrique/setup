@@ -6,14 +6,18 @@ Item {
 
     property date currentDate: new Date()
 
-    implicitWidth: 280
-    implicitHeight: 300
+    implicitWidth: content.implicitWidth
+    implicitHeight: content.implicitHeight
 
     property int currentYear: currentDate.getFullYear()
     property int currentMonth: currentDate.getMonth()
 
     function monthName() {
-        const date = new Date(currentYear, currentMonth, 1)
+        const date = new Date(
+            currentYear,
+            currentMonth,
+            1
+        )
 
         return date.toLocaleDateString(
             Qt.locale(),
@@ -40,29 +44,31 @@ Item {
     Rectangle {
         anchors.fill: parent
 
-        color: Theme.background
-        radius: 6
+        color: "transparent"
 
         Column {
-            anchors.fill: parent
-            anchors.margins: 12
+            id: content
 
-            spacing: 10
+            anchors.centerIn: parent
+
+            spacing: Theme.calendar.spacing
 
             Text {
-                width: parent.width
+                width: 280
+
                 text: root.monthName()
 
-                color: Theme.textColor
-                font.pixelSize: 16
-                font.bold: true
+                color: Theme.calendar.monthTextColor
+                font.pixelSize: Theme.calendar.monthFontSize
+                font.bold: Theme.calendar.monthFontBold
 
                 horizontalAlignment: Text.AlignHCenter
             }
 
             Row {
-                width: parent.width
-                spacing: 0
+                width: 280
+
+                spacing: Theme.calendar.weekSpacing
 
                 Repeater {
                     model: [
@@ -78,12 +84,13 @@ Item {
                     delegate: Text {
                         required property string modelData
 
-                        width: parent.width / 7
+                        width: 40
+
                         text: modelData
 
-                        color: Theme.textColor
-                        font.pixelSize: 12
-                        font.bold: true
+                        color: Theme.calendar.weekTextColor
+                        font.pixelSize: Theme.calendar.weekFontSize
+                        font.bold: Theme.calendar.weekFontBold
 
                         horizontalAlignment: Text.AlignHCenter
                     }
@@ -91,18 +98,19 @@ Item {
             }
 
             Grid {
-                width: parent.width
+                width: 280
+
                 columns: 7
-                rows: 6
+                rows: Math.ceil((root.firstDayOfMonth() + root.daysInMonth()) / 7)
 
                 Repeater {
-                    model: 42
+                    model: Math.ceil((root.firstDayOfMonth() + root.daysInMonth()) / 7) * 7
 
                     delegate: Item {
                         required property int index
 
-                        width: parent.width / 7
-                        height: 36
+                        width: 40
+                        height: 40
 
                         readonly property int day:
                             index - root.firstDayOfMonth() + 1
@@ -122,24 +130,22 @@ Item {
 
                             width: 30
                             height: 30
-                            radius: 15
 
-                            color: today
-                                ? Theme.primary
-                                : "transparent"
+                            radius: 0
 
                             visible: validDay
+
+                            color: today ? Theme.primary : "transparent"
 
                             Text {
                                 anchors.centerIn: parent
 
                                 text: validDay ? day : ""
+                                
+                                color: Theme.calendar.dayTextColor
 
-                                color: today
-                                    ? "#ffffff"
-                                    : Theme.textColor
-
-                                font.pixelSize: 13
+                                font.pixelSize: Theme.calendar.dayFontSize
+                                font.bold: today ? Theme.calendar.todayFontBold : Theme.calendar.dayFontBold
                             }
                         }
                     }
