@@ -2,7 +2,6 @@ import Quickshell
 import Quickshell.I3
 import Quickshell.Io
 import QtQuick
-import ".."
 
 Text {
     id: root
@@ -20,8 +19,8 @@ Text {
 
     text: windowTitle
 
-    color: Theme.textColor
-    font.pixelSize: Theme.fontSize
+    color: Theme.focusedWindow.textColor
+    font.pixelSize: Theme.focusedWindow.fontSize
     font.bold: Theme.focusedWindow.fontBold
 
     width: Theme.focusedWindow.width

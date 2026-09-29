@@ -1,8 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import ".."
-import "../popups" as Popups
+import "../Popups" as Popups
 
 Item {
     id: root
@@ -19,7 +18,8 @@ Item {
     implicitHeight: volumeText.implicitHeight
 
     function updateStatus() {
-        statusProcess.running = true
+        if (!statusProcess.running)
+            statusProcess.running = true
     }
 
     function volumeUp() {
@@ -142,18 +142,16 @@ Item {
         }
     }
 
-    Popups.VolumePopup {
+    Popups.Volume {
         id: volumePopup
 
         target: root
     }
 
-    Timer {
-        interval: 1000
-        running: true
-        repeat: true
+    Connections {
+        target: volumePopup
 
-        onTriggered: {
+        function onSinkChanged() {
             root.updateStatus()
         }
     }

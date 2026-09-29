@@ -1,7 +1,6 @@
 import QtQuick
 import Quickshell
 import Quickshell.Services.SystemTray
-import ".."
 
 Row {
     id: root

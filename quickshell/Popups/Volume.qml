@@ -1,12 +1,13 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import ".."
 
 PopupWindow {
     id: root
 
     required property var target
+
+    signal sinkChanged()
 
     property string audioScript:
         Quickshell.shellDir + "/scripts/audio.sh"
@@ -192,7 +193,8 @@ PopupWindow {
         command: []
 
         onExited: {
-            listProcess.running = true
+            root.sinkChanged()
+            root.close()
         }
     }
 
@@ -228,7 +230,6 @@ PopupWindow {
         ]
 
         setSinkProcess.running = true
-        root.close()
     }
 
     function open() {
@@ -245,9 +246,5 @@ PopupWindow {
             close()
         else
             open()
-    }
-
-    Component.onCompleted: {
-        listProcess.running = true
     }
 }

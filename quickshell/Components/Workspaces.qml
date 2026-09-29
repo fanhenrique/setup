@@ -1,7 +1,6 @@
 import Quickshell
 import Quickshell.I3
 import QtQuick
-import".."
 
 Row {
     id: root

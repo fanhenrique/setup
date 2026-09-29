@@ -1,7 +1,6 @@
 import Quickshell
 import Quickshell.I3
 import QtQuick
-import "./components" as Components
 
 PanelWindow {
     id: root
@@ -58,22 +57,35 @@ PanelWindow {
         }
     }
 
-    Components.Workspaces {
+    Workspaces {
         id: workspaces
 
         monitor: root.swayMonitor
     }
 
-    Components.FocusedWindow {
+    FocusedWindow {
         id: focusedWindow
         monitor: root.swayMonitor
     }
 
-    Components.Clock {
+    Clock {
         anchors.centerIn: parent
     }
 
-    Components.Volume {
+    Text {
+        anchors {
+            right: volume.left
+            rightMargin: 8
+            verticalCenter: parent.verticalCenter
+        }
+
+        text: modelData.name
+
+        color: Theme.textColor
+        font.pixelSize: Theme.fontSize
+    }
+
+    Volume {
         id: volume
 
         anchors {
@@ -83,20 +95,8 @@ PanelWindow {
         }
     }
 
-    // Text {
-    //     anchors {
-    //         right: tray.left
-    //         rightMargin: 8
-    //         verticalCenter: parent.verticalCenter
-    //     }
 
-    //     text: modelData.name
-
-    //     color: Theme.textColor
-    //     font.pixelSize: Theme.fontSize
-    // }
-
-    Components.Tray {
+    Tray {
         id: tray
 
         panelWindow: root

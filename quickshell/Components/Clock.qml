@@ -1,14 +1,17 @@
 import QtQuick
 import Quickshell
-import ".."
-import "../popups" as Popups
+import "../Popups" as Popups
 
 Text {
     id: root
 
     color: Theme.clock.textColor
-    font.pixelSize: Theme.clock.fontSize
-    font.bold: Theme.clock.fontBold
+
+    font.pixelSize:
+        Theme.clock.fontSize
+
+    font.bold:
+        Theme.clock.fontBold
 
     function updateClock() {
         text = Qt.formatDateTime(
@@ -18,12 +21,14 @@ Text {
     }
 
     Timer {
-        interval: Theme.clock.interval
+        interval:
+            Theme.clock.interval
+
         running: true
         repeat: true
 
         onTriggered: {
-            updateClock()
+            root.updateClock()
         }
     }
 
@@ -35,10 +40,16 @@ Text {
         }
     }
 
-    Popups.Calendar {
+    Popups.Popup {
         id: calendarPopup
 
         target: root
+
+        contentItem: Component {
+            Popups.Calendar {
+                anchors.centerIn: parent
+            }
+        }
     }
 
     Component.onCompleted: {
