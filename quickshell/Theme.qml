@@ -111,9 +111,9 @@ QtObject {
         readonly property int spacing: 8
     }
 
-    // // ############################
-    // // Component Popup
-    // // ############################
+    // ############################
+    // Component Popup
+    // ############################
     readonly property QtObject popup: QtObject {
         // Gap 
         readonly property int gap: 15
@@ -133,9 +133,9 @@ QtObject {
         readonly property bool grabFocus: true
     }
 
-    // // ############################
-    // // Popup Calendar
-    // // ############################
+    // ############################
+    // Popup Calendar
+    // ############################
     readonly property QtObject calendar: QtObject {
         // Positions
         readonly property int spacing: 5
@@ -164,4 +164,12 @@ QtObject {
         readonly property int todayRadius: 4
     }
 
+
+    readonly property QtObject volume: QtObject {
+        readonly property int spacing: 6
+        readonly property int fontSize: root.fontSize
+
+        readonly property color textColor: root.textColor
+        readonly property color mutedColor: root.primary
+    }
 }

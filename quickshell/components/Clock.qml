@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import ".."
-import "."
+import "../popups" as Popups
 
 Text {
     id: root
@@ -35,16 +35,10 @@ Text {
         }
     }
 
-    Popup {
+    Popups.Calendar {
         id: calendarPopup
 
         target: root
-
-        contentItem: Component {
-            Calendar {
-                anchors.fill: parent
-            }
-        }
     }
 
     Component.onCompleted: {

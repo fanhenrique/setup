@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import ".."
 
 PopupWindow {
     id: root

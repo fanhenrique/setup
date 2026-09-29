@@ -1,8 +1,11 @@
 import QtQuick
+import Quickshell
 import ".."
 
-Item {
+PopupWindow {
     id: root
+
+    required property var target
 
     property date currentDate: new Date()
 
@@ -15,6 +18,52 @@ Item {
 
     readonly property int weekSpacing: Theme.calendar.weekSpacing
     readonly property int daySize: Theme.calendar.daySize
+
+    property int padding: 12
+    property int gap: 5
+
+    color: "transparent"
+
+    implicitWidth: content.implicitWidth + padding * 2
+    implicitHeight: content.implicitHeight + padding * 2
+
+    anchor {
+        item: root.target
+
+        rect.x: root.target.width / 2
+        rect.y: root.target.height + root.gap
+        rect.width: 1
+        rect.height: 1
+
+        edges: Edges.Top
+        gravity: Edges.Bottom
+        adjustment: PopupAdjustment.All
+    }
+
+    function monthName() {
+        const date = new Date(currentYear, currentMonth, 1)
+
+        return date.toLocaleDateString(
+            Qt.locale(),
+            "MMMM yyyy"
+        )
+    }
+
+    function daysInMonth() {
+        return new Date(
+            currentYear,
+            currentMonth + 1,
+            0
+        ).getDate()
+    }
+
+    function firstDayOfMonth() {
+        return new Date(
+            currentYear,
+            currentMonth,
+            1
+        ).getDay()
+    }
 
     TextMetrics {
         id: weekTextMetrics
@@ -40,27 +89,16 @@ Item {
     readonly property real calendarWidth:
         (columnWidth + weekSpacing) * 7
 
-    implicitWidth: content.implicitWidth
-    implicitHeight: content.implicitHeight
-
-    function monthName() {
-        const date = new Date(currentYear, currentMonth, 1)
-
-        return date.toLocaleDateString(Qt.locale(), "MMMM yyyy")
-    }
-
-    function daysInMonth() {
-        return new Date(currentYear, currentMonth + 1, 0).getDate()
-    }
-
-    function firstDayOfMonth() {
-        return new Date(currentYear, currentMonth, 1).getDay()
-    }
-
     Rectangle {
         anchors.fill: parent
 
-        color: "transparent"
+        color: Theme.background
+        radius: 8
+
+        border {
+            width: 1
+            color: "#4c566a"
+        }
 
         Column {
             id: content
@@ -75,6 +113,7 @@ Item {
                 text: root.monthName()
 
                 color: Theme.calendar.monthTextColor
+
                 font.pixelSize: Theme.calendar.monthFontSize
                 font.bold: Theme.calendar.monthFontBold
 
@@ -97,6 +136,7 @@ Item {
                         text: modelData
 
                         color: Theme.calendar.weekTextColor
+
                         font.pixelSize: Theme.calendar.weekFontSize
                         font.bold: Theme.calendar.weekFontBold
 
@@ -109,19 +149,33 @@ Item {
                 width: root.calendarWidth
 
                 columns: 7
-                rows: Math.ceil((root.firstDayOfMonth() + root.daysInMonth()) / 7)
+
+                rows: Math.ceil(
+                    (
+                        root.firstDayOfMonth() +
+                        root.daysInMonth()
+                    ) / 7
+                )
 
                 Repeater {
-                    model: Math.ceil((root.firstDayOfMonth() + root.daysInMonth()) / 7) * 7
+                    model:
+                        Math.ceil(
+                            (
+                                root.firstDayOfMonth() +
+                                root.daysInMonth()
+                            ) / 7
+                        ) * 7
 
                     delegate: Item {
                         required property int index
 
-                        width: root.columnWidth + weekSpacing
+                        width: root.columnWidth + root.weekSpacing
                         height: root.columnWidth
 
                         readonly property int day:
-                            index - root.firstDayOfMonth() + 1
+                            index -
+                            root.firstDayOfMonth() +
+                            1
 
                         readonly property bool validDay:
                             day >= 1 &&
@@ -130,35 +184,64 @@ Item {
                         readonly property bool today:
                             validDay &&
                             day === new Date().getDate() &&
-                            root.currentMonth === new Date().getMonth() &&
-                            root.currentYear === new Date().getFullYear()
+                            root.currentMonth ===
+                                new Date().getMonth() &&
+                            root.currentYear ===
+                                new Date().getFullYear()
 
                         Rectangle {
                             anchors.centerIn: parent
 
-                            width: root.daySize+weekSpacing
+                            width: root.daySize + root.weekSpacing
                             height: root.daySize
 
                             radius: Theme.calendar.todayRadius
 
                             visible: validDay
 
-                            color: today ? Theme.calendar.todayColor : "transparent"
+                            color:
+                                today
+                                    ? Theme.calendar.todayColor
+                                    : "transparent"
 
                             Text {
                                 anchors.centerIn: parent
 
                                 text: validDay ? day : ""
 
-                                color: today ? Theme.calendar.todayTextColor : Theme.calendar.dayTextColor
+                                color:
+                                    today
+                                        ? Theme.calendar.todayTextColor
+                                        : Theme.calendar.dayTextColor
 
-                                font.pixelSize: Theme.calendar.dayFontSize
-                                font.bold: today ? Theme.calendar.todayFontBold : Theme.calendar.dayFontBold
+                                font.pixelSize:
+                                    Theme.calendar.dayFontSize
+
+                                font.bold:
+                                    today
+                                        ? Theme.calendar.todayFontBold
+                                        : Theme.calendar.dayFontBold
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    function open() {
+        currentDate = new Date()
+        visible = true
+    }
+
+    function close() {
+        visible = false
+    }
+
+    function toggle() {
+        if (visible)
+            close()
+        else
+            open()
     }
 }

@@ -73,18 +73,28 @@ PanelWindow {
         anchors.centerIn: parent
     }
 
-    Text {
+    Components.Volume {
+        id: volume
+
         anchors {
             right: tray.left
-            rightMargin: 8
+            rightMargin: 12
             verticalCenter: parent.verticalCenter
         }
-
-        text: modelData.name
-
-        color: Theme.textColor
-        font.pixelSize: Theme.fontSize
     }
+
+    // Text {
+    //     anchors {
+    //         right: tray.left
+    //         rightMargin: 8
+    //         verticalCenter: parent.verticalCenter
+    //     }
+
+    //     text: modelData.name
+
+    //     color: Theme.textColor
+    //     font.pixelSize: Theme.fontSize
+    // }
 
     Components.Tray {
         id: tray
