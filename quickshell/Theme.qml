@@ -8,7 +8,7 @@ QtObject {
     // ############################
     // Global colors
     // ############################
-    readonly property color background: "#464646"
+    readonly property color background: '#111111'
     readonly property color foreground: "#eceff4"
     readonly property color primary: "#0079b1"
     readonly property color urgent: "#bf616a"
@@ -30,7 +30,7 @@ QtObject {
     // ############################
     readonly property QtObject bar: QtObject {
         // Size
-        readonly property int height: 32
+        readonly property int height: 36
 
         // Position (default = "top") -> "top" or "bottom"
         readonly property string position: "top"
@@ -134,65 +134,34 @@ QtObject {
     }
 
     // // ############################
-    // // Component Calendar
+    // // Popup Calendar
     // // ############################
     readonly property QtObject calendar: QtObject {
-        readonly property int spacing: 8
+        // Positions
+        readonly property int spacing: 5
+        readonly property int weekSpacing: 8
+        readonly property int daySize: 20
 
         // Month
         readonly property int monthFontSize: 20
         readonly property bool monthFontBold: true
-        readonly property color monthTextColor: root.primary
-        
+        readonly property color monthTextColor: root.textColor
+
         // Week
-        readonly property int weekFontSize: 16
+        readonly property int weekFontSize: 14
         readonly property bool weekFontBold: true
-        readonly property color weekTextColor: root.primary
-        readonly property int weekSpacing: 0
-        
-        // Day
-        readonly property int dayFontSize: 16
+        readonly property color weekTextColor: root.textColor
+
+        // Days
+        readonly property int dayFontSize: 14
         readonly property bool dayFontBold: false
         readonly property color dayTextColor: root.textColor
-        
-        // Today
-        readonly property int todayFontSize: 16
+
+        // Today (inherits dayFontSize from Days)
         readonly property bool todayFontBold: true
-        readonly property color todayTextColor: root.textColor
-
+        readonly property color todayTextColor: "#000000"
+        readonly property color todayColor: root.primary
+        readonly property int todayRadius: 4
     }
-
-
-    // // ############################
-    // // CPU
-    // // ############################
-    // readonly property QtObject cpu: QtObject {
-    //     readonly property color textColor: root.textColor
-    //     readonly property color warning: root.warning
-    //     readonly property color critical: root.primary
-    //     readonly property int fontSize: root.fontSize
-    // }
-
-    // // ############################
-    // // Memory
-    // // ############################
-
-    // readonly property QtObject memory: QtObject {
-    //     readonly property color textColor: root.textColor
-    //     readonly property color warning: root.warning
-    //     readonly property color critical: root.primary
-    //     readonly property int fontSize: root.fontSize
-    // }
-
-    // // ############################
-    // // Network
-    // // ############################
-
-    // readonly property QtObject network: QtObject {
-    //     readonly property color textColor: root.textColor
-    //     readonly property color warning: root.warning
-    //     readonly property color critical: root.primary
-    //     readonly property int fontSize: root.fontSize
-    // }
 
 }

@@ -6,39 +6,55 @@ Item {
 
     property date currentDate: new Date()
 
-    implicitWidth: content.implicitWidth
-    implicitHeight: content.implicitHeight
-
     property int currentYear: currentDate.getFullYear()
     property int currentMonth: currentDate.getMonth()
 
-    function monthName() {
-        const date = new Date(
-            currentYear,
-            currentMonth,
-            1
-        )
+    readonly property var weekDays: [
+        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+    ]
 
-        return date.toLocaleDateString(
-            Qt.locale(),
-            "MMMM yyyy"
-        )
+    readonly property int weekSpacing: Theme.calendar.weekSpacing
+    readonly property int daySize: Theme.calendar.daySize
+
+    TextMetrics {
+        id: weekTextMetrics
+
+        font.pixelSize: Theme.calendar.weekFontSize
+        font.bold: Theme.calendar.weekFontBold
+    }
+
+    TextMetrics {
+        id: dayTextMetrics
+
+        font.pixelSize: Theme.calendar.dayFontSize
+        font.bold: Theme.calendar.dayFontBold
+    }
+
+    readonly property real columnWidth:
+        Math.max(
+            weekTextMetrics.width,
+            dayTextMetrics.width,
+            daySize
+        ) + weekSpacing
+
+    readonly property real calendarWidth:
+        (columnWidth + weekSpacing) * 7
+
+    implicitWidth: content.implicitWidth
+    implicitHeight: content.implicitHeight
+
+    function monthName() {
+        const date = new Date(currentYear, currentMonth, 1)
+
+        return date.toLocaleDateString(Qt.locale(), "MMMM yyyy")
     }
 
     function daysInMonth() {
-        return new Date(
-            currentYear,
-            currentMonth + 1,
-            0
-        ).getDate()
+        return new Date(currentYear, currentMonth + 1, 0).getDate()
     }
 
     function firstDayOfMonth() {
-        return new Date(
-            currentYear,
-            currentMonth,
-            1
-        ).getDay()
+        return new Date(currentYear, currentMonth, 1).getDay()
     }
 
     Rectangle {
@@ -54,7 +70,7 @@ Item {
             spacing: Theme.calendar.spacing
 
             Text {
-                width: 280
+                width: root.calendarWidth
 
                 text: root.monthName()
 
@@ -66,25 +82,17 @@ Item {
             }
 
             Row {
-                width: 280
+                width: root.calendarWidth
 
-                spacing: Theme.calendar.weekSpacing
+                spacing: root.weekSpacing
 
                 Repeater {
-                    model: [
-                        "Dom",
-                        "Seg",
-                        "Ter",
-                        "Qua",
-                        "Qui",
-                        "Sex",
-                        "Sáb"
-                    ]
+                    model: root.weekDays
 
                     delegate: Text {
                         required property string modelData
 
-                        width: 40
+                        width: root.columnWidth
 
                         text: modelData
 
@@ -98,7 +106,7 @@ Item {
             }
 
             Grid {
-                width: 280
+                width: root.calendarWidth
 
                 columns: 7
                 rows: Math.ceil((root.firstDayOfMonth() + root.daysInMonth()) / 7)
@@ -109,8 +117,8 @@ Item {
                     delegate: Item {
                         required property int index
 
-                        width: 40
-                        height: 40
+                        width: root.columnWidth + weekSpacing
+                        height: root.columnWidth
 
                         readonly property int day:
                             index - root.firstDayOfMonth() + 1
@@ -128,21 +136,21 @@ Item {
                         Rectangle {
                             anchors.centerIn: parent
 
-                            width: 30
-                            height: 30
+                            width: root.daySize+weekSpacing
+                            height: root.daySize
 
-                            radius: 0
+                            radius: Theme.calendar.todayRadius
 
                             visible: validDay
 
-                            color: today ? Theme.primary : "transparent"
+                            color: today ? Theme.calendar.todayColor : "transparent"
 
                             Text {
                                 anchors.centerIn: parent
 
                                 text: validDay ? day : ""
-                                
-                                color: Theme.calendar.dayTextColor
+
+                                color: today ? Theme.calendar.todayTextColor : Theme.calendar.dayTextColor
 
                                 font.pixelSize: Theme.calendar.dayFontSize
                                 font.bold: today ? Theme.calendar.todayFontBold : Theme.calendar.dayFontBold
