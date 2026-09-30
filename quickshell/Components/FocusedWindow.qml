@@ -32,9 +32,7 @@ Text {
         id: treeProcess
 
         command: [
-            "swaymsg",
-            "-t",
-            "get_tree"
+            "swaymsg", "-t", "get_tree"
         ]
 
         stdout: StdioCollector {
@@ -48,10 +46,7 @@ Text {
                     else
                         root.windowTitle = ""
                 } catch (error) {
-                    console.log(
-                        "FocusedWindow: JSON parse error:",
-                        error
-                    )
+                    console.log("FocusedWindow: JSON parse error:", error)
                 }
             }
         }

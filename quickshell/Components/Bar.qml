@@ -14,12 +14,7 @@ PanelWindow {
         const m = I3.monitorFor(modelData)
 
         if (m !== swayMonitor) {
-            console.log(
-                "Sway monitor:",
-                modelData.name,
-                "->",
-                m ? m.name : "NULL"
-            )
+            console.log("Sway monitor:", modelData.name, "->", m ? m.name : "NULL")
 
             swayMonitor = m
         }
@@ -75,7 +70,7 @@ PanelWindow {
 
         anchors {
             left: workspaces.right
-            leftMargin: 4
+            leftMargin: 8
             top: parent.top
             bottom: parent.bottom
         }
@@ -109,7 +104,8 @@ PanelWindow {
         anchors {
             right: tray.left
             rightMargin: 8
-            verticalCenter: parent.verticalCenter
+            top: parent.top
+            bottom: parent.bottom
         }
     }
 

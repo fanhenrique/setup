@@ -7,9 +7,7 @@ Text {
     id: root
 
     color: Theme.clock.textColor
-
     font.pixelSize: Theme.clock.fontSize
-
     font.bold: Theme.clock.fontBold
 
     function updateClock() {
