@@ -53,11 +53,27 @@ PopupWindow {
         Loader {
             id: contentLoader
 
-            anchors.fill: parent
+            anchors {
+                fill: parent
+                margins: root.padding
+            }
         }
     }
 
+    function open() {
+        PopupManager.open(root)
+    }
+
+    function close() {
+        PopupManager.close(root)
+    }
+
     function toggle() {
-        visible = !visible
+        PopupManager.toggle(root)
+    }
+
+    onVisibleChanged: {
+        if (!visible && PopupManager.currentPopup === root)
+            PopupManager.currentPopup = null
     }
 }

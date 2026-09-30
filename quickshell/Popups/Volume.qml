@@ -10,6 +10,11 @@ Popup {
 
     signal sinkChanged()
 
+    onVisibleChanged: {
+        if (visible)
+            listProcess.running = true
+    }
+
     contentItem: Component {
         Item {
             implicitWidth: 300
@@ -171,7 +176,12 @@ Popup {
     function updateSinks(output) {
         sinksModel.clear()
 
-        const lines = output.trim().split("\n")
+        const text = output.trim()
+
+        if (!text)
+            return
+
+        const lines = text.split("\n")
 
         for (let i = 0; i < lines.length; ++i) {
             if (!lines[i].trim())
@@ -193,6 +203,9 @@ Popup {
     }
 
     function setDefaultSink(name) {
+        if (setSinkProcess.running)
+            return
+
         setSinkProcess.command = [
             root.audioScript,
             "set-default",
@@ -200,22 +213,5 @@ Popup {
         ]
 
         setSinkProcess.running = true
-    }
-
-    function open() {
-        listProcess.running = true
-        visible = true
-    }
-
-    function close() {
-        visible = false
-    }
-
-    function toggle() {
-        if (visible) {
-            root.close()
-        } else {
-            root.open()
-        }
     }
 }
