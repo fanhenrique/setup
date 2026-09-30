@@ -1,17 +1,12 @@
 import Quickshell
 import Quickshell.I3
 import QtQuick
+import "../Themes"
 
 Row {
     id: root
 
     required property var monitor
-
-    anchors {
-        left: parent.left
-        leftMargin: Theme.workspaces.leftMargin
-        verticalCenter: parent.verticalCenter
-    }
 
     spacing: Theme.workspaces.spacing
 

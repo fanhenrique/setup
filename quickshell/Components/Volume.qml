@@ -1,13 +1,13 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "../Themes"
 import "../Popups" as Popups
 
 Item {
     id: root
 
-    property string audioScript:
-        Quickshell.shellDir + "/scripts/audio.sh"
+    property string audioScript: Quickshell.shellDir + "/scripts/audio.sh"
 
     property string sinkName: ""
     property string sinkDescription: ""
@@ -40,15 +40,12 @@ Item {
         anchors.fill: parent
 
         text: {
-            if (muted)
-                return sinkDescription + " MUTE"
+            if (muted) return sinkDescription + " MUTE"
 
             return sinkDescription + " " + volume
         }
 
-        color: muted
-            ? Theme.warning
-            : Theme.textColor
+        color: muted ? Theme.warning : Theme.textColor
 
         font.pixelSize: Theme.fontSize
         verticalAlignment: Text.AlignVCenter
@@ -59,9 +56,7 @@ Item {
     MouseArea {
         anchors.fill: parent
 
-        acceptedButtons:
-            Qt.LeftButton |
-            Qt.RightButton
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
 
         onClicked: function(mouse) {
             if (mouse.button === Qt.LeftButton) {
@@ -146,12 +141,9 @@ Item {
         id: volumePopup
 
         target: root
-    }
+        audioScript: root.audioScript
 
-    Connections {
-        target: volumePopup
-
-        function onSinkChanged() {
+        onSinkChanged: {
             root.updateStatus()
         }
     }

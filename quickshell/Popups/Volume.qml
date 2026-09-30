@@ -1,166 +1,136 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import "../Themes"
 
-PopupWindow {
+Popup {
     id: root
 
-    required property var target
+    property string audioScript
 
     signal sinkChanged()
 
-    property string audioScript:
-        Quickshell.shellDir + "/scripts/audio.sh"
+    contentItem: Component {
+        Item {
+            implicitWidth: 300
+            implicitHeight: contentColumn.implicitHeight
 
-    property int popupWidth: 300
-    property int padding: Theme.popup.padding
-    property int gap: Theme.popup.gap
+            Column {
+                id: contentColumn
 
-    color: "transparent"
+                anchors.fill: parent
 
-    implicitWidth: popupWidth
-    implicitHeight: content.implicitHeight + padding * 2
+                spacing: 4
 
-    grabFocus: true
+                Text {
+                    width: parent.width
 
-    anchor {
-        item: root.target
+                    text: "Saída de áudio"
 
-        rect.x: root.target.width / 2
-        rect.y: root.target.height + root.gap
-        rect.width: 1
-        rect.height: 1
+                    color: Theme.textColor
 
-        edges: Edges.Top
-        gravity: Edges.Bottom
-        adjustment: PopupAdjustment.All
-    }
+                    font.pixelSize: Theme.fontSize
+                    font.bold: true
+                }
 
-    Rectangle {
-        anchors.fill: parent
+                Rectangle {
+                    width: parent.width
+                    height: 1
 
-        color: Theme.popup.color
-        radius: Theme.popup.radius
+                    color: Theme.popup.borderColor
+                }
 
-        border {
-            width: Theme.popup.borderWidth
-            color: Theme.popup.borderColor
-        }
+                ListView {
+                    id: sinkList
 
-        Column {
-            id: content
+                    width: parent.width
 
-            anchors.fill: parent
-            anchors.margins: root.padding
+                    height: Math.min(
+                        sinksModel.count * 38,
+                        250
+                    )
 
-            spacing: 4
+                    clip: true
 
-            Text {
-                width: parent.width
+                    model: sinksModel
 
-                text: "Saída de áudio"
+                    delegate: Rectangle {
+                        required property string sinkName
+                        required property string description
+                        required property string volume
+                        required property string muted
+                        required property string isDefault
 
-                color: Theme.textColor
+                        width: sinkList.width
+                        height: 38
 
-                font.pixelSize: Theme.fontSize
-                font.bold: true
-            }
+                        radius: 5
 
-            Rectangle {
-                width: parent.width
-                height: 1
+                        color: isDefault === "yes"
+                            ? Theme.primary
+                            : "transparent"
 
-                color: Theme.popup.borderColor
-            }
+                        MouseArea {
+                            anchors.fill: parent
 
-            ListView {
-                id: sinkList
+                            hoverEnabled: true
 
-                width: parent.width
+                            onEntered: {
+                                if (isDefault !== "yes")
+                                    parent.color = "#434c5e"
+                            }
 
-                height: Math.min(
-                    sinksModel.count * 38,
-                    250
-                )
+                            onExited: {
+                                parent.color = isDefault === "yes"
+                                    ? Theme.primary
+                                    : "transparent"
+                            }
 
-                clip: true
-
-                model: sinksModel
-
-                delegate: Rectangle {
-                    required property string sinkName
-                    required property string description
-                    required property string volume
-                    required property string muted
-                    required property string isDefault
-
-                    width: sinkList.width
-                    height: 38
-
-                    radius: 5
-
-                    color: isDefault === "yes"
-                        ? Theme.primary
-                        : "transparent"
-
-                    MouseArea {
-                        anchors.fill: parent
-
-                        hoverEnabled: true
-
-                        onEntered: {
-                            if (isDefault !== "yes")
-                                parent.color = "#434c5e"
+                            onClicked: {
+                                root.setDefaultSink(sinkName)
+                            }
                         }
 
-                        onExited: {
-                            parent.color = isDefault === "yes"
-                                ? Theme.primary
-                                : "transparent"
-                        }
+                        Row {
+                            anchors.fill: parent
 
-                        onClicked: {
-                            root.setDefaultSink(sinkName)
-                        }
-                    }
+                            anchors.leftMargin: 8
+                            anchors.rightMargin: 8
 
-                    Row {
-                        anchors.fill: parent
+                            spacing: 8
 
-                        anchors.leftMargin: 8
-                        anchors.rightMargin: 8
+                            Text {
+                                width: parent.width - volumeText.width - 16
 
-                        spacing: 8
+                                anchors.verticalCenter:
+                                    parent.verticalCenter
 
-                        Text {
-                            width: parent.width - volumeText.width - 16
+                                text: description
 
-                            anchors.verticalCenter: parent.verticalCenter
+                                color: Theme.textColor
 
-                            text: description
+                                font.pixelSize: Theme.fontSize
 
-                            color: Theme.textColor
+                                elide: Text.ElideRight
+                            }
 
-                            font.pixelSize: Theme.fontSize
+                            Text {
+                                id: volumeText
 
-                            elide: Text.ElideRight
-                        }
+                                anchors.verticalCenter:
+                                    parent.verticalCenter
 
-                        Text {
-                            id: volumeText
+                                text: muted === "yes"
+                                    ? "MUTE"
+                                    : volume
 
-                            anchors.verticalCenter: parent.verticalCenter
+                                color: muted === "yes"
+                                    ? Theme.warning
+                                    : Theme.textColor
 
-                            text: muted === "yes"
-                                ? "MUTE"
-                                : volume
-
-                            color: muted === "yes"
-                                ? Theme.warning
-                                : Theme.textColor
-
-                            font.pixelSize: Theme.fontSize
-                            font.bold: isDefault === "yes"
+                                font.pixelSize: Theme.fontSize
+                                font.bold: isDefault === "yes"
+                            }
                         }
                     }
                 }
@@ -242,9 +212,10 @@ PopupWindow {
     }
 
     function toggle() {
-        if (visible)
-            close()
-        else
-            open()
+        if (visible) {
+            root.close()
+        } else {
+            root.open()
+        }
     }
 }

@@ -2,6 +2,7 @@ import Quickshell
 import Quickshell.I3
 import Quickshell.Io
 import QtQuick
+import "../Themes"
 
 Text {
     id: root
@@ -9,13 +10,6 @@ Text {
     required property var monitor
 
     property string windowTitle: ""
-
-    anchors {
-        left: workspaces.right
-        leftMargin: Theme.focusedWindow.leftMargin
-        top: parent.top
-        bottom: parent.bottom
-    }
 
     text: windowTitle
 

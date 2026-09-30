@@ -1,5 +1,6 @@
 import QtQuick
 import Quickshell
+import "../Themes"
 
 PopupWindow {
     id: root

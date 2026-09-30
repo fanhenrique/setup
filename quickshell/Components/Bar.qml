@@ -1,6 +1,7 @@
 import Quickshell
 import Quickshell.I3
 import QtQuick
+import "../Themes"
 
 PanelWindow {
     id: root
@@ -59,27 +60,44 @@ PanelWindow {
 
     Workspaces {
         id: workspaces
-
         monitor: root.swayMonitor
+
+        anchors {
+            left: parent.left
+            leftMargin: 4
+            verticalCenter: parent.verticalCenter
+        }
     }
 
     FocusedWindow {
         id: focusedWindow
         monitor: root.swayMonitor
+
+        anchors {
+            left: workspaces.right
+            leftMargin: 4
+            top: parent.top
+            bottom: parent.bottom
+        }
     }
 
     Clock {
-        anchors.centerIn: parent
+        anchors{
+            centerIn: parent
+            top: parent.top
+            bottom: parent.bottom
+        }
     }
 
     Text {
+        id: monitor
+        text: modelData.name
+
         anchors {
             right: volume.left
             rightMargin: 8
             verticalCenter: parent.verticalCenter
         }
-
-        text: modelData.name
 
         color: Theme.textColor
         font.pixelSize: Theme.fontSize
@@ -90,15 +108,13 @@ PanelWindow {
 
         anchors {
             right: tray.left
-            rightMargin: 12
+            rightMargin: 8
             verticalCenter: parent.verticalCenter
         }
     }
 
-
     Tray {
         id: tray
-
         panelWindow: root
 
         anchors {

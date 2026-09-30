@@ -1,203 +1,177 @@
 import QtQuick
+import "../Themes"
 
-Item {
+Popup {
     id: root
 
-    property date currentDate: new Date()
+    contentItem: Component {
+        Item {
+            implicitWidth: calendarWidth
+            implicitHeight: content.implicitHeight
 
-    property int currentYear: currentDate.getFullYear()
-    property int currentMonth: currentDate.getMonth()
+            property date currentDate: new Date()
 
-    readonly property var weekDays: [
-        "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
-    ]
+            property int currentYear: currentDate.getFullYear()
+            property int currentMonth: currentDate.getMonth()
 
-    readonly property int weekSpacing: Theme.calendar.weekSpacing
+            readonly property var weekDays: [
+                "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
+            ]
 
-    readonly property int daySize: Theme.calendar.daySize
+            readonly property int weekSpacing: Theme.calendar.weekSpacing
 
-    TextMetrics {
-        id: weekTextMetrics
+            readonly property int daySize: Theme.calendar.daySize
 
-        font.pixelSize: Theme.calendar.weekFontSize
-        font.bold: Theme.calendar.weekFontBold
-    }
+            TextMetrics {
+                id: weekTextMetrics
 
-    TextMetrics {
-        id: dayTextMetrics
+                font.pixelSize: Theme.calendar.weekFontSize
+                font.bold: Theme.calendar.weekFontBold
+            }
 
-        font.pixelSize: Theme.calendar.dayFontSize
-        font.bold: Theme.calendar.dayFontBold
-    }
+            TextMetrics {
+                id: dayTextMetrics
 
-    readonly property real columnWidth:
-        Math.max(
-            weekTextMetrics.width,
-            dayTextMetrics.width,
-            daySize
-        ) + weekSpacing
+                font.pixelSize: Theme.calendar.dayFontSize
+                font.bold: Theme.calendar.dayFontBold
+            }
 
-    readonly property real calendarWidth:
-        (columnWidth + weekSpacing) * 7
+            readonly property real columnWidth:
+                Math.max(
+                    weekTextMetrics.width,
+                    dayTextMetrics.width,
+                    daySize
+                ) + weekSpacing
 
-    implicitWidth: calendarWidth
-    implicitHeight: content.implicitHeight
+            readonly property real calendarWidth: (columnWidth + weekSpacing) * 7
 
-    function monthName() {
-        const date = new Date(
-            currentYear,
-            currentMonth,
-            1
-        )
+            function monthName() {
+                const date = new Date(currentYear, currentMonth, 1)
 
-        return date.toLocaleDateString(
-            Qt.locale(),
-            "MMMM yyyy"
-        )
-    }
+                return date.toLocaleDateString(Qt.locale(), "MMMM yyyy")
+            }
 
-    function daysInMonth() {
-        return new Date(
-            currentYear,
-            currentMonth + 1,
-            0
-        ).getDate()
-    }
+            function daysInMonth() {
+                return new Date(currentYear, currentMonth + 1, 0).getDate()
+            }
 
-    function firstDayOfMonth() {
-        return new Date(currentYear, currentMonth, 1).getDay()
-    }
+            function firstDayOfMonth() {
+                return new Date(currentYear, currentMonth, 1).getDay()
+            }
 
-    function resetDate() {
-        currentDate = new Date()
-    }
+            function resetDate() {
+                currentDate = new Date()
+            }
 
-    Column {
-        id: content
+            Column {
+                id: content
 
-        anchors.centerIn: parent
+                anchors.centerIn: parent
 
-        spacing: Theme.calendar.spacing
+                spacing: Theme.calendar.spacing
 
-        Text {
-            width: root.calendarWidth
+                Text {
+                    width: parent.parent.calendarWidth
 
-            text: root.monthName()
+                    text: parent.parent.monthName()
 
-            color: Theme.calendar.monthTextColor
+                    color: Theme.calendar.monthTextColor
 
-            font.pixelSize: Theme.calendar.monthFontSize
-            font.bold: Theme.calendar.monthFontBold
-            horizontalAlignment: Text.AlignHCenter
-        }
+                    font.pixelSize: Theme.calendar.monthFontSize
+                    font.bold: Theme.calendar.monthFontBold
 
-        Row {
-            width: root.calendarWidth
-
-            spacing: root.weekSpacing
-
-            Repeater {
-                model: root.weekDays
-
-                delegate: Text {
-                    required property string modelData
-                    width: root.columnWidth
-                    text: modelData
-                    color: Theme.calendar.weekTextColor
-                    font.pixelSize: Theme.calendar.weekFontSize
-                    font.bold: Theme.calendar.weekFontBold
                     horizontalAlignment: Text.AlignHCenter
                 }
-            }
-        }
 
-        Grid {
-            width: root.calendarWidth
+                Row {
+                    width: parent.parent.calendarWidth
 
-            columns: 7
+                    spacing: parent.parent.weekSpacing
 
-            rows: Math.ceil((root.firstDayOfMonth() + root.daysInMonth()) / 7)
+                    Repeater {
+                        model: parent.parent.weekDays
 
-            Repeater {
-                model:
-                    Math.ceil((root.firstDayOfMonth() + root.daysInMonth()) / 7) * 7
+                        delegate: Text {
+                            required property string modelData
 
-                delegate: Item {
-                    required property int index
+                            width: parent.parent.parent.columnWidth
 
-                    width:
-                        root.columnWidth +
-                        root.weekSpacing
+                            text: modelData
 
-                    height:
-                        root.columnWidth
+                            color: Theme.calendar.weekTextColor
 
-                    readonly property int day:
-                        index -
-                        root.firstDayOfMonth() +
-                        1
+                            font.pixelSize: Theme.calendar.weekFontSize
 
-                    readonly property bool validDay:
-                        day >= 1 &&
-                        day <= root.daysInMonth()
+                            font.bold: Theme.calendar.weekFontBold
 
-                    readonly property bool today:
-                        validDay &&
-                        day === new Date().getDate() &&
-                        root.currentMonth ===
-                            new Date().getMonth() &&
-                        root.currentYear ===
-                            new Date().getFullYear()
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+                    }
+                }
 
-                    Rectangle {
-                        anchors.centerIn: parent
+                Grid {
+                    width: parent.parent.calendarWidth
 
-                        width:
-                            root.daySize +
-                            root.weekSpacing
+                    columns: 7
 
-                        height:
-                            root.daySize
+                    rows: Math.ceil((parent.parent.firstDayOfMonth() + parent.parent.daysInMonth()) / 7)
 
-                        radius:
-                            Theme.calendar.todayRadius
+                    Repeater {
+                        model:
+                            Math.ceil((parent.parent.parent.firstDayOfMonth() + parent.parent.parent.daysInMonth()) / 7) * 7
 
-                        visible:
-                            validDay
+                        delegate: Item {
+                            required property int index
 
-                        color:
-                            today
-                                ? Theme.calendar.todayColor
-                                : "transparent"
+                            width: parent.parent.parent.columnWidth + parent.parent.parent.weekSpacing
 
-                        Text {
-                            anchors.centerIn: parent
+                            height: parent.parent.parent.columnWidth
 
-                            text:
-                                validDay
-                                    ? day
-                                    : ""
+                            readonly property int day: index - parent.parent.parent.firstDayOfMonth() + 1
 
-                            color:
-                                today
-                                    ? Theme.calendar.todayTextColor
-                                    : Theme.calendar.dayTextColor
+                            readonly property bool validDay: day >= 1 && day <= parent.parent.parent.daysInMonth()
 
-                            font.pixelSize:
-                                Theme.calendar.dayFontSize
+                            readonly property bool today:
+                                validDay &&
+                                day === new Date().getDate() &&
+                                parent.parent.parent.currentMonth ===
+                                    new Date().getMonth() &&
+                                parent.parent.parent.currentYear ===
+                                    new Date().getFullYear()
 
-                            font.bold:
-                                today
-                                    ? Theme.calendar.todayFontBold
-                                    : Theme.calendar.dayFontBold
+                            Rectangle {
+                                anchors.centerIn: parent
+
+                                width: parent.parent.parent.parent.daySize + parent.parent.parent.parent.weekSpacing
+
+                                height: parent.parent.parent.parent.daySize
+
+                                radius: Theme.calendar.todayRadius
+
+                                visible: parent.validDay
+
+                                color: parent.today ? Theme.calendar.todayColor : "transparent"
+
+                                Text {
+                                    anchors.centerIn: parent
+
+                                    text: parent.parent.validDay ? parent.parent.day : ""
+
+                                    color: parent.parent.today ? Theme.calendar.todayTextColor : Theme.calendar.dayTextColor
+
+                                    font.pixelSize: Theme.calendar.dayFontSize
+
+                                    font.bold: parent.parent.today ? Theme.calendar.todayFontBold : Theme.calendar.dayFontBold
+                                }
+                            }
                         }
                     }
                 }
             }
-        }
-    }
 
-    Component.onCompleted: {
-        resetDate()
+            Component.onCompleted: {
+                resetDate()
+            }
+        }
     }
 }
