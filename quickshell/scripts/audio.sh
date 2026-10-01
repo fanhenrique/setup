@@ -50,7 +50,8 @@ short_name() {
 
 get_volume() {
     pactl get-sink-volume @DEFAULT_SINK@ |
-        awk 'NR == 1 {print $5}'
+        awk 'NR == 1 {print $5}' |
+        sed 's/.$//'
 }
 
 get_muted() {

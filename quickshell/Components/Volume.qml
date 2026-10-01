@@ -14,8 +14,8 @@ Item {
     property string volume: ""
     property bool muted: false
 
-    implicitWidth: volumeText.implicitWidth
-    implicitHeight: volumeText.implicitHeight
+    implicitWidth: sinkText.implicitWidth + volumeText.width
+    implicitHeight: Math.max(sinkText.implicitHeight, volumeText.implicitHeight)
 
     function updateStatus() {
         if (!statusProcess.running)
@@ -34,23 +34,47 @@ Item {
         muteProcess.running = true
     }
 
-    Text {
-        id: volumeText
-
-        anchors.fill: parent
-
-        text: {
-            if (muted) return sinkDescription + " MUTE"
-
-            return sinkDescription + " " + volume
+    Row {
+        anchors {
+            left: parent.left
+            right: parent.right
+            verticalCenter: parent.verticalCenter
         }
 
-        color: muted ? Theme.warning : Theme.textColor
+        Text {
+            id: sinkText
 
-        font.pixelSize: Theme.fontSize
-        verticalAlignment: Text.AlignVCenter
+            text: sinkDescription + " "
 
-        elide: Text.ElideRight
+            color: muted ? Theme.warning : Theme.textColor
+
+            font.pixelSize: Theme.volume.fontSize
+            font.bold: Theme.volume.fontBold
+
+            verticalAlignment: Text.AlignVCenter
+
+            elide: Text.ElideRight
+        }
+
+        Text {
+            id: volumeText
+
+            width: 40
+
+            text: muted
+                ? "MUTE"
+                : volume + "%"
+
+            color: muted
+                ? Theme.warning
+                : Theme.textColor
+
+            font.pixelSize: Theme.volume.fontSize
+            font.bold: Theme.volume.fontBold
+
+            horizontalAlignment: Text.AlignRight
+            verticalAlignment: Text.AlignVCenter
+        }
     }
 
     MouseArea {
@@ -101,10 +125,7 @@ Item {
     Process {
         id: volumeUpProcess
 
-        command: [
-            root.audioScript,
-            "volume-up"
-        ]
+        command: [root.audioScript, "volume-up"]
 
         onExited: {
             root.updateStatus()
@@ -114,10 +135,7 @@ Item {
     Process {
         id: volumeDownProcess
 
-        command: [
-            root.audioScript,
-            "volume-down"
-        ]
+        command: [root.audioScript, "volume-down"]
 
         onExited: {
             root.updateStatus()
@@ -127,10 +145,7 @@ Item {
     Process {
         id: muteProcess
 
-        command: [
-            root.audioScript,
-            "mute"
-        ]
+        command: [root.audioScript, "mute"]
 
         onExited: {
             root.updateStatus()

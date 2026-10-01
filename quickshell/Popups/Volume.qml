@@ -25,35 +25,14 @@ Popup {
 
                 anchors.fill: parent
 
-                spacing: 4
-
-                Text {
-                    width: parent.width
-
-                    text: "Saída de áudio"
-
-                    color: Theme.textColor
-
-                    font.pixelSize: Theme.fontSize
-                    font.bold: true
-                }
-
-                Rectangle {
-                    width: parent.width
-                    height: 1
-
-                    color: Theme.popup.borderColor
-                }
+                spacing: Theme.volume.spacing
 
                 ListView {
                     id: sinkList
 
                     width: parent.width
 
-                    height: Math.min(
-                        sinksModel.count * 38,
-                        250
-                    )
+                    height: Math.min(sinksModel.count * 38, 250)
 
                     clip: true
 
