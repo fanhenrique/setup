@@ -125,8 +125,10 @@ QtObject {
     // Calendar
     readonly property QtObject calendar: QtObject {
         // Positions
-        readonly property int spacing: 5
+        readonly property int spacing: 12
         readonly property int weekSpacing: 8
+        readonly property int weekNumberSpacing: 32
+
         readonly property int daySize: 20
 
         // Month
