@@ -23,7 +23,7 @@ Popup {
             Column {
                 id: contentColumn
 
-                spacing: Theme.volume.spacing
+                spacing: Theme.microphone.spacing
 
                 property int horizontalPadding: Theme.microphone.horizontalPadding
 
@@ -54,9 +54,9 @@ Popup {
                             + contentColumn.horizontalPadding * 2
 
                         width: contentColumn.width
-                        height: 38
+                        height: Theme.microphone.height
 
-                        radius: 5
+                        radius: Theme.microphone.radius
 
                         color: isDefault === "yes"
                             ? Theme.primary

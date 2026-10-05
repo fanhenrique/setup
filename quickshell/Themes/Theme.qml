@@ -163,8 +163,11 @@ QtObject {
     }
 
     readonly property QtObject microphone: QtObject {
-        readonly property int horizontalPadding: 50
+        readonly property int horizontalPadding: 24
         readonly property int spacing: 4
+
+        readonly property int height: 32        
+        readonly property int radius: 4
     }
 
 }
