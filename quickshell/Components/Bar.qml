@@ -102,6 +102,17 @@ PanelWindow {
         id: volume
 
         anchors {
+            right: microphone.left
+            rightMargin: 8
+            top: parent.top
+            bottom: parent.bottom
+        }
+    }
+
+    Microphone {
+        id: microphone
+
+        anchors {
             right: tray.left
             rightMargin: 8
             top: parent.top

@@ -155,11 +155,16 @@ QtObject {
 
     // Volume
     readonly property QtObject volume: QtObject {
-        readonly property int spacing: 6
+        readonly property int spacing: 4
         readonly property int fontSize: root.fontSize
         readonly property bool fontBold: true
         readonly property color textColor: root.textColor
         readonly property color mutedColor: root.primary
+    }
+
+    readonly property QtObject microphone: QtObject {
+        readonly property int horizontalPadding: 50
+        readonly property int spacing: 4
     }
 
 }
