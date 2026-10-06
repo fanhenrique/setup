@@ -6,18 +6,6 @@ Item {
 
     required property var model
 
-    property int horizontalPadding: Theme.microphone.horizontalPadding
-    property int itemHeight: Theme.microphone.height
-    property int itemRadius: Theme.microphone.radius
-    property int spacing: Theme.microphone.spacing
-
-    property color selectedColor: Theme.primary
-    property color hoverColor: "#434c5e"
-    property color textColor: Theme.textColor
-
-    property string textRole: "description"
-    property string selectedRole: "isDefault"
-
     signal itemClicked(var item)
 
     implicitWidth: menuColumn.width
@@ -26,7 +14,7 @@ Item {
     Column {
         id: menuColumn
 
-        spacing: root.spacing
+        spacing: Theme.menu.spacing
 
         width: {
             var maxWidth = 0
@@ -47,18 +35,16 @@ Item {
             delegate: Rectangle {
                 required property var modelData
 
-                readonly property string itemText: modelData[root.textRole]
-                readonly property bool selected: modelData[root.selectedRole] === "yes"
+                readonly property string itemText: modelData["description"]
+                readonly property bool selected: modelData["isDefault"] === "yes"
 
-                implicitWidth: textItem.implicitWidth + root.horizontalPadding * 2
+                implicitWidth: textItem.implicitWidth + Theme.menu.horizontalPadding * 2
                 width: menuColumn.width
-                height: root.itemHeight
+                height: Theme.menu.height
 
-                radius: root.itemRadius
+                radius: Theme.menu.radius
 
-                color: selected
-                    ? root.selectedColor
-                    : "transparent"
+                color: selected ? Theme.menu.selectedColor : "transparent"
 
                 MouseArea {
                     anchors.fill: parent
@@ -67,13 +53,11 @@ Item {
 
                     onEntered: {
                         if (!parent.selected)
-                            parent.color = root.hoverColor
+                            parent.color = Theme.menu.hoverColor
                     }
 
                     onExited: {
-                        parent.color = parent.selected
-                            ? root.selectedColor
-                            : "transparent"
+                        parent.color = parent.selected ? Theme.menu.selectedColor : "transparent"
                     }
 
                     onClicked: {
@@ -88,9 +72,9 @@ Item {
 
                     text: parent.itemText
 
-                    color: root.textColor
+                    color: Theme.menu.textColor
 
-                    font.pixelSize: Theme.fontSize
+                    font.pixelSize: Theme.menu.fontSize
 
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter

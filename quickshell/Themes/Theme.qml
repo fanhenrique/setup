@@ -153,6 +153,22 @@ QtObject {
         readonly property int todayRadius: 4
     }
 
+    // Menu
+    readonly property QtObject menu: QtObject{
+        readonly property color selectedColor: Theme.primary
+        readonly property color hoverColor: "#434c5e"
+
+        readonly property int dayFontSize: Theme.fontSize
+        readonly property color textColor: Theme.textColor
+
+        readonly property int horizontalPadding: 24
+        readonly property int spacing: 4
+
+        readonly property int height: 32
+        readonly property int radius: 4
+
+    }
+
     // Volume
     readonly property QtObject volume: QtObject {
         readonly property int spacing: 4
@@ -162,6 +178,7 @@ QtObject {
         readonly property color mutedColor: root.primary
     }
 
+    // Microphone
     readonly property QtObject microphone: QtObject {
         readonly property int horizontalPadding: 24
         readonly property int spacing: 4
