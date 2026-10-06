@@ -16,89 +16,11 @@ Popup {
     }
 
     contentItem: Component {
-        Item {
-            implicitWidth: contentColumn.width
-            implicitHeight: contentColumn.implicitHeight
+        Menu {
+            model: sourcesModel
 
-            Column {
-                id: contentColumn
-
-                spacing: Theme.microphone.spacing
-
-                property int horizontalPadding: Theme.microphone.horizontalPadding
-
-                width: {
-                    var maxWidth = 0
-
-                    for (var i = 0; i < children.length; ++i) {
-                        var child = children[i]
-
-                        if (child.implicitWidth > maxWidth)
-                            maxWidth = child.implicitWidth
-                    }
-
-                    return maxWidth
-                }
-
-                Repeater {
-                    model: sourcesModel
-
-                    delegate: Rectangle {
-                        required property string sourceName
-                        required property string description
-                        required property string volume
-                        required property string muted
-                        required property string isDefault
-
-                        implicitWidth: descriptionText.implicitWidth
-                            + contentColumn.horizontalPadding * 2
-
-                        width: contentColumn.width
-                        height: Theme.microphone.height
-
-                        radius: Theme.microphone.radius
-
-                        color: isDefault === "yes"
-                            ? Theme.primary
-                            : "transparent"
-
-                        MouseArea {
-                            anchors.fill: parent
-
-                            hoverEnabled: true
-
-                            onEntered: {
-                                if (isDefault !== "yes")
-                                    parent.color = "#434c5e"
-                            }
-
-                            onExited: {
-                                parent.color = isDefault === "yes"
-                                    ? Theme.primary
-                                    : "transparent"
-                            }
-
-                            onClicked: {
-                                root.setDefaultSource(sourceName)
-                            }
-                        }
-
-                        Text {
-                            id: descriptionText
-
-                            anchors.centerIn: parent
-
-                            text: description
-
-                            color: Theme.textColor
-
-                            font.pixelSize: Theme.fontSize
-
-                            horizontalAlignment: Text.AlignHCenter
-                            verticalAlignment: Text.AlignVCenter
-                        }
-                    }
-                }
+            onItemClicked: function(item) {
+                root.setDefaultSource(item.sourceName)
             }
         }
     }
