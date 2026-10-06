@@ -11,7 +11,7 @@ set $menu_window rofi -show window
 set $menu_ssh rofi -show ssh
 
 # Status Bar
-exec ironbar
+exec quickshell -p ~/.config/quickshell/Shell.qml
 
 include /etc/sway/config-vars.d/*
 
@@ -97,7 +97,6 @@ include ~/.config/sway/media.conf
 
 input type:keyboard {
     xkb_layout us
-    xkb_variant intl
 }
 
 include /etc/sway/config.d/*
