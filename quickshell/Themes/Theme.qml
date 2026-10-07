@@ -183,7 +183,10 @@ QtObject {
         readonly property int horizontalPadding: 24
         readonly property int spacing: 4
 
-        readonly property int height: 32        
+        readonly property color textColor: root.textColor
+        readonly property color mutedColor: Theme.urgent
+
+        readonly property int height: 32
         readonly property int radius: 4
     }
 

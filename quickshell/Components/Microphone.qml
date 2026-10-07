@@ -15,10 +15,7 @@ Item {
     property bool muted: false
 
     implicitWidth: sourceText.implicitWidth + volumeText.width
-    implicitHeight: Math.max(
-        sourceText.implicitHeight,
-        volumeText.implicitHeight
-    )
+    implicitHeight: Math.max(sourceText.implicitHeight, volumeText.implicitHeight)
 
     function updateStatus() {
         if (!statusProcess.running)
@@ -26,15 +23,18 @@ Item {
     }
 
     function volumeUp() {
-        volumeUpProcess.running = true
+        if (!volumeUpProcess.running)
+            volumeUpProcess.running = true
     }
 
     function volumeDown() {
-        volumeDownProcess.running = true
+        if (!volumeDownProcess.running)
+            volumeDownProcess.running = true
     }
 
     function toggleMute() {
-        muteProcess.running = true
+        if (!muteProcess.running)
+            muteProcess.running = true
     }
 
     Row {
@@ -47,17 +47,11 @@ Item {
         Text {
             id: sourceText
 
-            text: sourceDescription + " "
-
-            color: muted
-                ? Theme.warning
-                : Theme.textColor
-
-            font.pixelSize: Theme.volume.fontSize
-            font.bold: Theme.volume.fontBold
-
+            text: root.sourceDescription
+            color: root.muted ? Theme.microphone.mutedColor : Theme.microphone.textColor
+            font.pixelSize: Theme.microphone.fontSize
+            font.bold: Theme.microphone.fontBold
             verticalAlignment: Text.AlignVCenter
-
             elide: Text.ElideRight
         }
 
@@ -65,18 +59,10 @@ Item {
             id: volumeText
 
             width: 40
-
-            text: muted
-                ? "MUTE"
-                : volume + "%"
-
-            color: muted
-                ? Theme.warning
-                : Theme.textColor
-
-            font.pixelSize: Theme.volume.fontSize
-            font.bold: Theme.volume.fontBold
-
+            text: root.muted ? "MUTE" : root.volume + "%"
+            color: root.muted ? Theme.microphone.mutedColor : Theme.microphone.textColor
+            font.pixelSize: Theme.microphone.fontSize
+            font.bold: Theme.microphone.fontBold
             horizontalAlignment: Text.AlignRight
             verticalAlignment: Text.AlignVCenter
         }
@@ -107,10 +93,7 @@ Item {
     Process {
         id: statusProcess
 
-        command: [
-            root.audioScript,
-            "status"
-        ]
+        command: [root.audioScript, "status"]
 
         stdout: StdioCollector {
             onStreamFinished: {
@@ -131,9 +114,7 @@ Item {
         id: volumeUpProcess
 
         command: [
-            root.audioScript,
-            "volume-up"
-        ]
+            root.audioScript, "volume-up"]
 
         onExited: {
             root.updateStatus()
@@ -143,10 +124,7 @@ Item {
     Process {
         id: volumeDownProcess
 
-        command: [
-            root.audioScript,
-            "volume-down"
-        ]
+        command: [root.audioScript, "volume-down"]
 
         onExited: {
             root.updateStatus()
@@ -156,13 +134,29 @@ Item {
     Process {
         id: muteProcess
 
-        command: [
-            root.audioScript,
-            "mute"
-        ]
+        command: [root.audioScript, "mute"]
 
         onExited: {
             root.updateStatus()
+        }
+    }
+
+    Process {
+        id: subscribeProcess
+
+        command: ["pactl", "subscribe"]
+
+        stdout: SplitParser {
+            onRead: function(line) {
+                if (line.includes("Event 'change' on source") || line.includes("Event 'change' on server"))
+                    root.updateStatus()
+            }
+        }
+
+        onExited: {
+            Qt.callLater(function() {
+                subscribeProcess.running = true
+            })
         }
     }
 
@@ -179,5 +173,6 @@ Item {
 
     Component.onCompleted: {
         root.updateStatus()
+        subscribeProcess.running = true
     }
 }
