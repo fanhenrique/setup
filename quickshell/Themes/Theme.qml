@@ -105,7 +105,7 @@ QtObject {
     // Popup
     readonly property QtObject popup: QtObject {
         // Gap 
-        readonly property int gap: 15
+        readonly property int gap: 16
         
         // Color
         readonly property color color: root.background
@@ -114,8 +114,8 @@ QtObject {
         readonly property int padding: 8
 
         // Border
-        readonly property int radius: 8
-        readonly property int borderWidth: 2
+        readonly property int radius: 4
+        readonly property int borderWidth: 4
         readonly property color borderColor: root.borderColor
         
         // Close the popup when clicking outside it
@@ -135,7 +135,7 @@ QtObject {
         readonly property color monthTextColor: root.textColor
 
         // Week
-        readonly property int weekFontSize: 14
+        readonly property int weekFontSize: 16
         readonly property bool weekFontBold: true
         readonly property color weekTextColor: root.textColor
 
@@ -165,7 +165,7 @@ QtObject {
 
         // Positions
         readonly property int horizontalPadding: 24
-        readonly property int spacing: 4
+        readonly property int spacing: 2
 
         // Sizes
         readonly property int height: 32

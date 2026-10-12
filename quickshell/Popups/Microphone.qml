@@ -35,16 +35,12 @@ Popup {
         command: [root.audioSourceScript, "list"]
 
         stdout: StdioCollector {
-            onStreamFinished: {
-                root.updateSources(this.text)
-            }
+            onStreamFinished: root.updateSources(this.text)
         }
     }
 
     Process {
         id: setSourceProcess
-
-        command: []
 
         onExited: function(exitCode, exitStatus) {
             if (exitCode === 0) {

@@ -38,11 +38,6 @@ Item {
     }
 
     Row {
-        anchors {
-            left: parent.left
-            right: parent.right
-            verticalCenter: parent.verticalCenter
-        }
 
         Text {
             id: sourceText
@@ -144,12 +139,6 @@ Item {
                 if (line.includes(" on source") || line.includes(" on server"))
                     root.updateStatus()
             }
-        }
-
-        onExited: {
-            Qt.callLater(function() {
-                subscribeProcess.running = true
-            })
         }
     }
 

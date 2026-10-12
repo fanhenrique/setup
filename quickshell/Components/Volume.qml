@@ -13,21 +13,13 @@ Item {
     property string sinkDescription: ""
     property string volume: ""
     property bool muted: false
-    property bool statusPending: false
 
     implicitWidth: sinkText.implicitWidth + volumeText.width
-    implicitHeight: Math.max(
-        sinkText.implicitHeight,
-        volumeText.implicitHeight
-    )
+    implicitHeight: Math.max(sinkText.implicitHeight, volumeText.implicitHeight)
 
     function updateStatus() {
-        statusPending = true
-
-        if (!statusProcess.running) {
-            statusPending = false
+        if (!statusProcess.running)
             statusProcess.running = true
-        }
     }
 
     function volumeUp() {
@@ -46,11 +38,6 @@ Item {
     }
 
     Row {
-        anchors {
-            left: parent.left
-            right: parent.right
-            verticalCenter: parent.verticalCenter
-        }
 
         Text {
             id: sinkText
@@ -116,15 +103,6 @@ Item {
             }
         }
 
-        onExited: {
-            if (root.statusPending) {
-                root.statusPending = false
-
-                Qt.callLater(function() {
-                    root.updateStatus()
-                })
-            }
-        }
     }
 
     Process {
@@ -161,13 +139,6 @@ Item {
                 if (line.includes(" on sink") || line.includes(" on server"))
                     root.updateStatus()
             }
-        }
-
-        onExited: {
-            Qt.callLater(function() {
-                if (!subscribeProcess.running)
-                    subscribeProcess.running = true
-            })
         }
     }
 

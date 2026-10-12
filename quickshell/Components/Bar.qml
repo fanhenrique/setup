@@ -21,8 +21,7 @@ PanelWindow {
     }
 
     anchors {
-        top: Theme.bar.position === "top" 
-            ? true : Theme.bar.position === "bottom" ? false : true
+        top: Theme.bar.position === "top" ? true : Theme.bar.position === "bottom" ? false : true
         bottom: Theme.bar.position === "bottom" ? true : false
         left: true
         right: true
@@ -32,9 +31,7 @@ PanelWindow {
 
     color: Theme.bar.background
 
-    Component.onCompleted: {
-        updateSwayMonitor()
-    }
+    Component.onCompleted: updateSwayMonitor()
 
     Connections {
         target: I3
@@ -71,16 +68,14 @@ PanelWindow {
         anchors {
             left: workspaces.right
             leftMargin: 8
-            top: parent.top
-            bottom: parent.bottom
+            verticalCenter: parent.verticalCenter
         }
     }
 
     Clock {
         anchors{
             centerIn: parent
-            top: parent.top
-            bottom: parent.bottom
+            verticalCenter: parent.verticalCenter
         }
     }
 
@@ -100,12 +95,11 @@ PanelWindow {
 
     Volume {
         id: volume
-
+        
         anchors {
             right: microphone.left
             rightMargin: 8
-            top: parent.top
-            bottom: parent.bottom
+            verticalCenter: parent.verticalCenter
         }
     }
 
@@ -115,8 +109,7 @@ PanelWindow {
         anchors {
             right: tray.left
             rightMargin: 8
-            top: parent.top
-            bottom: parent.bottom
+            verticalCenter: parent.verticalCenter
         }
     }
 

@@ -24,9 +24,12 @@ Popup {
             readonly property real columnWidth: Math.max(weekTextMetrics.width, dayTextMetrics.width, daySize)
             readonly property real dayColumnWidth: columnWidth
             readonly property real weekNumberWidth: weekNumberTextMetrics.width
-            readonly property real weekColumnWidth: weekNumberWidth + weekNumberSpacing
+            readonly property real weekColumnWidth: weekNumberWidth
 
-            readonly property real calendarWidth: showWeekNumber ? weekColumnWidth + (dayColumnWidth * 7) + (weekSpacing * 6) : (dayColumnWidth * 7) + (weekSpacing * 6)
+            // readonly property real calendarWidth: showWeekNumber ? weekColumnWidth + (dayColumnWidth * 7) + (weekSpacing * 6) : (dayColumnWidth * 7) + (weekSpacing * 6)
+
+            readonly property real calendarWidth: showWeekNumber ? weekColumnWidth + weekNumberSpacing + (dayColumnWidth * 7) + (weekSpacing * 6) : (dayColumnWidth * 7) + (weekSpacing * 6)
+            // readonly property real calendarWidth: showWeekNumber ? weekColumnWidth + weekNumberSpacing + dayColumnWidth * 7 parde par+ weekSpacing * 6 : dayColumnWidth * 7 + weekSpacing * 6
 
             TextMetrics {
                 id: weekTextMetrics
@@ -81,7 +84,7 @@ Popup {
             Column {
                 id: content
 
-                anchors.centerIn: parent
+                // anchors.centerIn: parent
                 spacing: Theme.calendar.spacing
 
                 Text {
@@ -95,7 +98,7 @@ Popup {
 
                 Row {
                     width: calendar.calendarWidth
-                    // spacing: 0
+                    spacing: weekNumberSpacing
 
                     Column {
                         visible: calendar.showWeekNumber

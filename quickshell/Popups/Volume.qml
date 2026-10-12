@@ -32,58 +32,23 @@ Popup {
     Process {
         id: listProcess
 
-        command: [
-            root.audioSinkScript,
-            "list"
-        ]
+        command: [root.audioSinkScript, "list"]
 
         stdout: StdioCollector {
-            onStreamFinished: {
-                root.updateSinks(this.text)
-            }
+            onStreamFinished: root.updateSinks(this.text)
         }
     }
 
     Process {
         id: setSinkProcess
 
-        command: []
-
         onExited: function(exitCode, exitStatus) {
             if (exitCode === 0) {
                 root.sinkChanged()
                 root.close()
-
-                if (!listProcess.running)
-                    listProcess.running = true
             } else {
                 console.log("Failed to change default sink")
             }
-        }
-    }
-
-    Process {
-        id: subscribeProcess
-
-        command: ["pactl", "subscribe"]
-
-        stdout: SplitParser {
-            onRead: function(line) {
-                if (
-                    line.includes(" on sink") ||
-                    line.includes(" on server")
-                ) {
-                    if (root.visible && !listProcess.running)
-                        listProcess.running = true
-                }
-            }
-        }
-
-        onExited: {
-            Qt.callLater(function() {
-                if (!subscribeProcess.running)
-                    subscribeProcess.running = true
-            })
         }
     }
 
@@ -129,7 +94,4 @@ Popup {
         setSinkProcess.running = true
     }
 
-    Component.onCompleted: {
-        subscribeProcess.running = true
-    }
 }
