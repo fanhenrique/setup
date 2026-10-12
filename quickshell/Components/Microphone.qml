@@ -7,7 +7,7 @@ import "../Popups" as Popups
 Item {
     id: root
 
-    property string audioScript: Quickshell.shellDir + "/scripts/microphone.sh"
+    property string audioSourceScript: Quickshell.shellDir + "/scripts/audio-source.sh"
 
     property string sourceName: ""
     property string sourceDescription: ""
@@ -58,7 +58,7 @@ Item {
         Text {
             id: volumeText
 
-            width: 40
+            width: Theme.microphone.widthVolumeText
             text: root.muted ? "MUTE" : root.volume + "%"
             color: root.muted ? Theme.microphone.mutedColor : Theme.microphone.textColor
             font.pixelSize: Theme.microphone.fontSize
@@ -93,7 +93,7 @@ Item {
     Process {
         id: statusProcess
 
-        command: [root.audioScript, "status"]
+        command: [root.audioSourceScript, "status"]
 
         stdout: StdioCollector {
             onStreamFinished: {
@@ -113,32 +113,25 @@ Item {
     Process {
         id: volumeUpProcess
 
-        command: [
-            root.audioScript, "volume-up"]
+        command: [root.audioSourceScript, "volume-up"]
 
-        onExited: {
-            root.updateStatus()
-        }
+        onExited: root.updateStatus()
     }
 
     Process {
         id: volumeDownProcess
 
-        command: [root.audioScript, "volume-down"]
+        command: [root.audioSourceScript, "volume-down"]
 
-        onExited: {
-            root.updateStatus()
-        }
+        onExited: root.updateStatus()
     }
 
     Process {
         id: muteProcess
 
-        command: [root.audioScript, "mute"]
+        command: [root.audioSourceScript, "mute"]
 
-        onExited: {
-            root.updateStatus()
-        }
+        onExited: root.updateStatus()
     }
 
     Process {
@@ -148,7 +141,7 @@ Item {
 
         stdout: SplitParser {
             onRead: function(line) {
-                if (line.includes("Event 'change' on source") || line.includes("Event 'change' on server"))
+                if (line.includes(" on source") || line.includes(" on server"))
                     root.updateStatus()
             }
         }
@@ -164,11 +157,9 @@ Item {
         id: microphonePopup
 
         target: root
-        audioScript: root.audioScript
+        audioSourceScript: root.audioSourceScript
 
-        onSourceChanged: {
-            root.updateStatus()
-        }
+        onSourceChanged: root.updateStatus()
     }
 
     Component.onCompleted: {

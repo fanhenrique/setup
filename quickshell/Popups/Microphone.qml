@@ -6,7 +6,7 @@ import "../Themes"
 Popup {
     id: root
 
-    property string audioScript
+    property string audioSourceScript
 
     signal sourceChanged()
 
@@ -32,7 +32,7 @@ Popup {
     Process {
         id: listProcess
 
-        command: [root.audioScript, "list"]
+        command: [root.audioSourceScript, "list"]
 
         stdout: StdioCollector {
             onStreamFinished: {
@@ -46,9 +46,13 @@ Popup {
 
         command: []
 
-        onExited: {
-            root.sourceChanged()
-            root.close()
+        onExited: function(exitCode, exitStatus) {
+            if (exitCode === 0) {
+                root.sourceChanged()
+                root.close()
+            } else {
+                console.log("Failed to change default source")
+            }
         }
     }
 
@@ -82,11 +86,11 @@ Popup {
     }
 
     function setDefaultSource(name) {
-        if (setSourceProcess.running)
+        if (!name || setSourceProcess.running)
             return
 
         setSourceProcess.command = [
-            root.audioScript,
+            root.audioSourceScript,
             "set-default",
             name
         ]

@@ -6,118 +6,21 @@ import "../Themes"
 Popup {
     id: root
 
-    property string audioScript
+    property string audioSinkScript
 
     signal sinkChanged()
 
     onVisibleChanged: {
-        if (visible)
+        if (visible && !listProcess.running)
             listProcess.running = true
     }
 
     contentItem: Component {
-        Item {
-            implicitWidth: 300
-            implicitHeight: contentColumn.implicitHeight
+        Menu {
+            model: sinksModel
 
-            Column {
-                id: contentColumn
-
-                anchors.fill: parent
-
-                spacing: Theme.volume.spacing
-
-                ListView {
-                    id: sinkList
-
-                    width: parent.width
-
-                    height: Math.min(sinksModel.count * 38, 250)
-
-                    clip: true
-
-                    model: sinksModel
-
-                    delegate: Rectangle {
-                        required property string sinkName
-                        required property string description
-                        required property string volume
-                        required property string muted
-                        required property string isDefault
-
-                        width: sinkList.width
-                        height: 38
-
-                        radius: 5
-
-                        color: isDefault === "yes"
-                            ? Theme.primary
-                            : "transparent"
-
-                        MouseArea {
-                            anchors.fill: parent
-
-                            hoverEnabled: true
-
-                            onEntered: {
-                                if (isDefault !== "yes")
-                                    parent.color = "#434c5e"
-                            }
-
-                            onExited: {
-                                parent.color = isDefault === "yes"
-                                    ? Theme.primary
-                                    : "transparent"
-                            }
-
-                            onClicked: {
-                                root.setDefaultSink(sinkName)
-                            }
-                        }
-
-                        Row {
-                            anchors.fill: parent
-
-                            anchors.leftMargin: 8
-                            anchors.rightMargin: 8
-
-                            spacing: 8
-
-                            Text {
-                                width: parent.width - volumeText.width - 16
-
-                                anchors.verticalCenter:
-                                    parent.verticalCenter
-
-                                text: description
-
-                                color: Theme.textColor
-
-                                font.pixelSize: Theme.fontSize
-
-                                elide: Text.ElideRight
-                            }
-
-                            Text {
-                                id: volumeText
-
-                                anchors.verticalCenter:
-                                    parent.verticalCenter
-
-                                text: muted === "yes"
-                                    ? "MUTE"
-                                    : volume
-
-                                color: muted === "yes"
-                                    ? Theme.warning
-                                    : Theme.textColor
-
-                                font.pixelSize: Theme.fontSize
-                                font.bold: isDefault === "yes"
-                            }
-                        }
-                    }
-                }
+            onItemClicked: function(item) {
+                root.setDefaultSink(item.sinkName)
             }
         }
     }
@@ -130,7 +33,7 @@ Popup {
         id: listProcess
 
         command: [
-            root.audioScript,
+            root.audioSinkScript,
             "list"
         ]
 
@@ -146,9 +49,41 @@ Popup {
 
         command: []
 
+        onExited: function(exitCode, exitStatus) {
+            if (exitCode === 0) {
+                root.sinkChanged()
+                root.close()
+
+                if (!listProcess.running)
+                    listProcess.running = true
+            } else {
+                console.log("Failed to change default sink")
+            }
+        }
+    }
+
+    Process {
+        id: subscribeProcess
+
+        command: ["pactl", "subscribe"]
+
+        stdout: SplitParser {
+            onRead: function(line) {
+                if (
+                    line.includes(" on sink") ||
+                    line.includes(" on server")
+                ) {
+                    if (root.visible && !listProcess.running)
+                        listProcess.running = true
+                }
+            }
+        }
+
         onExited: {
-            root.sinkChanged()
-            root.close()
+            Qt.callLater(function() {
+                if (!subscribeProcess.running)
+                    subscribeProcess.running = true
+            })
         }
     }
 
@@ -186,11 +121,15 @@ Popup {
             return
 
         setSinkProcess.command = [
-            root.audioScript,
+            root.audioSinkScript,
             "set-default",
             name
         ]
 
         setSinkProcess.running = true
+    }
+
+    Component.onCompleted: {
+        subscribeProcess.running = true
     }
 }

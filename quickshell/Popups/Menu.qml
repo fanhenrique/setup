@@ -69,13 +69,10 @@ Item {
                     id: textItem
 
                     anchors.centerIn: parent
-
                     text: parent.itemText
-
                     color: Theme.menu.textColor
-
                     font.pixelSize: Theme.menu.fontSize
-
+                    font.bold: Theme.menu.fontBold
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                 }

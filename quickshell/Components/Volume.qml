@@ -7,31 +7,42 @@ import "../Popups" as Popups
 Item {
     id: root
 
-    property string audioScript: Quickshell.shellDir + "/scripts/audio.sh"
+    property string audioSinkScript: Quickshell.shellDir + "/scripts/audio-sink.sh"
 
     property string sinkName: ""
     property string sinkDescription: ""
     property string volume: ""
     property bool muted: false
+    property bool statusPending: false
 
     implicitWidth: sinkText.implicitWidth + volumeText.width
-    implicitHeight: Math.max(sinkText.implicitHeight, volumeText.implicitHeight)
+    implicitHeight: Math.max(
+        sinkText.implicitHeight,
+        volumeText.implicitHeight
+    )
 
     function updateStatus() {
-        if (!statusProcess.running)
+        statusPending = true
+
+        if (!statusProcess.running) {
+            statusPending = false
             statusProcess.running = true
+        }
     }
 
     function volumeUp() {
-        volumeUpProcess.running = true
+        if (!volumeUpProcess.running)
+            volumeUpProcess.running = true
     }
 
     function volumeDown() {
-        volumeDownProcess.running = true
+        if (!volumeDownProcess.running)
+            volumeDownProcess.running = true
     }
 
     function toggleMute() {
-        muteProcess.running = true
+        if (!muteProcess.running)
+            muteProcess.running = true
     }
 
     Row {
@@ -44,34 +55,22 @@ Item {
         Text {
             id: sinkText
 
-            text: sinkDescription + " "
-
-            color: muted ? Theme.warning : Theme.textColor
-
+            text: root.sinkDescription
+            color: root.muted ? Theme.volume.mutedColor : Theme.volume.textColor
             font.pixelSize: Theme.volume.fontSize
             font.bold: Theme.volume.fontBold
-
             verticalAlignment: Text.AlignVCenter
-
             elide: Text.ElideRight
         }
 
         Text {
             id: volumeText
 
-            width: 40
-
-            text: muted
-                ? "MUTE"
-                : volume + "%"
-
-            color: muted
-                ? Theme.warning
-                : Theme.textColor
-
+            width: Theme.volume.widthVolumeText
+            text: root.muted ? "MUTE" : root.volume + "%"
+            color: root.muted ? Theme.volume.mutedColor : Theme.volume.textColor
             font.pixelSize: Theme.volume.fontSize
             font.bold: Theme.volume.fontBold
-
             horizontalAlignment: Text.AlignRight
             verticalAlignment: Text.AlignVCenter
         }
@@ -91,21 +90,17 @@ Item {
         }
 
         onWheel: function(wheel) {
-            if (wheel.angleDelta.y > 0) {
+            if (wheel.angleDelta.y > 0)
                 root.volumeUp()
-            } else if (wheel.angleDelta.y < 0) {
+            else if (wheel.angleDelta.y < 0)
                 root.volumeDown()
-            }
         }
     }
 
     Process {
         id: statusProcess
 
-        command: [
-            root.audioScript,
-            "status"
-        ]
+        command: [root.audioSinkScript, "status"]
 
         stdout: StdioCollector {
             onStreamFinished: {
@@ -120,35 +115,59 @@ Item {
                 root.muted = lines[3] === "yes"
             }
         }
+
+        onExited: {
+            if (root.statusPending) {
+                root.statusPending = false
+
+                Qt.callLater(function() {
+                    root.updateStatus()
+                })
+            }
+        }
     }
 
     Process {
         id: volumeUpProcess
 
-        command: [root.audioScript, "volume-up"]
+        command: [root.audioSinkScript, "volume-up"]
 
-        onExited: {
-            root.updateStatus()
-        }
+        onExited: root.updateStatus()
     }
 
     Process {
         id: volumeDownProcess
 
-        command: [root.audioScript, "volume-down"]
+        command: [root.audioSinkScript, "volume-down"]
 
-        onExited: {
-            root.updateStatus()
-        }
+        onExited: root.updateStatus()
     }
 
     Process {
         id: muteProcess
 
-        command: [root.audioScript, "mute"]
+        command: [root.audioSinkScript, "mute"]
+
+        onExited: root.updateStatus()
+    }
+
+    Process {
+        id: subscribeProcess
+
+        command: ["pactl", "subscribe"]
+
+        stdout: SplitParser {
+            onRead: function(line) {
+                if (line.includes(" on sink") || line.includes(" on server"))
+                    root.updateStatus()
+            }
+        }
 
         onExited: {
-            root.updateStatus()
+            Qt.callLater(function() {
+                if (!subscribeProcess.running)
+                    subscribeProcess.running = true
+            })
         }
     }
 
@@ -156,14 +175,13 @@ Item {
         id: volumePopup
 
         target: root
-        audioScript: root.audioScript
+        audioSinkScript: root.audioSinkScript
 
-        onSinkChanged: {
-            root.updateStatus()
-        }
+        onSinkChanged: root.updateStatus()
     }
 
     Component.onCompleted: {
         root.updateStatus()
+        subscribeProcess.running = true
     }
 }

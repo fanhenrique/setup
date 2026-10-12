@@ -127,9 +127,7 @@ QtObject {
         // Positions
         readonly property int spacing: 12
         readonly property int weekSpacing: 8
-        readonly property int weekNumberSpacing: 32
-
-        readonly property int daySize: 20
+        readonly property int weekNumberSpacing: 24
 
         // Month
         readonly property int monthFontSize: 20
@@ -142,6 +140,7 @@ QtObject {
         readonly property color weekTextColor: root.textColor
 
         // Days
+        readonly property int daySize: 24
         readonly property int dayFontSize: 14
         readonly property bool dayFontBold: false
         readonly property color dayTextColor: root.textColor
@@ -155,39 +154,52 @@ QtObject {
 
     // Menu
     readonly property QtObject menu: QtObject{
+        // Colors
         readonly property color selectedColor: Theme.primary
         readonly property color hoverColor: "#434c5e"
 
-        readonly property int dayFontSize: Theme.fontSize
+        // Font
+        readonly property int fontSize: Theme.fontSize
         readonly property color textColor: Theme.textColor
+        readonly property bool fontBold: true
 
+        // Positions
         readonly property int horizontalPadding: 24
         readonly property int spacing: 4
 
+        // Sizes
         readonly property int height: 32
         readonly property int radius: 4
-
     }
 
     // Volume
     readonly property QtObject volume: QtObject {
-        readonly property int spacing: 4
+        
+        // Positions
+        readonly property int widthVolumeText: 45
+
+        // Muted
+        readonly property color mutedColor: root.urgent
+
+        // Font
+        readonly property color textColor: root.textColor
         readonly property int fontSize: root.fontSize
         readonly property bool fontBold: true
-        readonly property color textColor: root.textColor
-        readonly property color mutedColor: root.primary
     }
 
     // Microphone
     readonly property QtObject microphone: QtObject {
-        readonly property int horizontalPadding: 24
-        readonly property int spacing: 4
+        
+        // Positions
+        readonly property int widthVolumeText: 45
 
-        readonly property color textColor: root.textColor
+        // Muted
         readonly property color mutedColor: Theme.urgent
 
-        readonly property int height: 32
-        readonly property int radius: 4
+        // Font
+        readonly property color textColor: root.textColor
+        readonly property int fontSize: root.fontSize
+        readonly property bool fontBold: true
     }
 
 }
