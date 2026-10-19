@@ -12,14 +12,17 @@ PopupWindow {
     property int gap: Theme.popup.gap
     property int padding: Theme.popup.padding
 
+    readonly property int borderWidth: Theme.popup.borderWidth
+    readonly property int contentMargin: padding + borderWidth
+
     color: "transparent"
 
     implicitWidth: contentLoader.item
-        ? contentLoader.item.implicitWidth + padding * 2
+        ? contentLoader.item.implicitWidth + contentMargin * 2
         : 0
 
     implicitHeight: contentLoader.item
-        ? contentLoader.item.implicitHeight + padding * 2
+        ? contentLoader.item.implicitHeight + contentMargin * 2
         : 0
 
     grabFocus: Theme.popup.grabFocus
@@ -46,7 +49,7 @@ PopupWindow {
         radius: Theme.popup.radius
 
         border {
-            width: Theme.popup.borderWidth
+            width: root.borderWidth
             color: Theme.popup.borderColor
         }
 
@@ -55,7 +58,7 @@ PopupWindow {
 
             anchors {
                 fill: parent
-                margins: root.padding
+                margins: root.contentMargin
             }
         }
     }

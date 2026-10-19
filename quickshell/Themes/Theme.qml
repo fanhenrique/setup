@@ -111,45 +111,15 @@ QtObject {
         readonly property color color: root.background
 
         // Padding
-        readonly property int padding: 8
+        readonly property int padding: 20
 
         // Border
         readonly property int radius: 4
-        readonly property int borderWidth: 4
+        readonly property int borderWidth: 2
         readonly property color borderColor: root.borderColor
         
         // Close the popup when clicking outside it
         readonly property bool grabFocus: true
-    }
-
-    // Calendar
-    readonly property QtObject calendar: QtObject {
-        // Positions
-        readonly property int spacing: 12
-        readonly property int weekSpacing: 8
-        readonly property int weekNumberSpacing: 24
-
-        // Month
-        readonly property int monthFontSize: 20
-        readonly property bool monthFontBold: true
-        readonly property color monthTextColor: root.textColor
-
-        // Week
-        readonly property int weekFontSize: 16
-        readonly property bool weekFontBold: true
-        readonly property color weekTextColor: root.textColor
-
-        // Days
-        readonly property int daySize: 24
-        readonly property int dayFontSize: 14
-        readonly property bool dayFontBold: false
-        readonly property color dayTextColor: root.textColor
-
-        // Today (inherits dayFontSize from Days)
-        readonly property bool todayFontBold: true
-        readonly property color todayTextColor: "#000000"
-        readonly property color todayColor: root.primary
-        readonly property int todayRadius: 4
     }
 
     // Menu
@@ -165,12 +135,43 @@ QtObject {
 
         // Positions
         readonly property int horizontalPadding: 24
-        readonly property int spacing: 2
+        readonly property int spacing: 0
 
         // Sizes
         readonly property int height: 32
         readonly property int radius: 4
     }
+
+    // Calendar
+    readonly property QtObject calendar: QtObject {
+        // Positions
+        readonly property int spacing: 0
+        readonly property int weekSpacing: 0
+        readonly property int weekNumberSpacing: 0
+
+        // Month
+        readonly property int monthFontSize: 24
+        readonly property bool monthFontBold: true
+        readonly property color monthTextColor: root.textColor
+
+        // Week
+        readonly property int weekFontSize: 14
+        readonly property bool weekFontBold: false
+        readonly property color weekTextColor: root.textColor
+
+        // Days
+        readonly property int daySize: 14
+        readonly property int dayFontSize: 14
+        readonly property bool dayFontBold: false
+        readonly property color dayTextColor: root.textColor
+
+        // Today (inherits dayFontSize from Days)
+        readonly property bool todayFontBold: true
+        readonly property color todayTextColor: "#000000"
+        readonly property color todayColor: root.primary
+        readonly property int todayRadius: 4
+    }
+
 
     // Volume
     readonly property QtObject volume: QtObject {
