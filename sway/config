@@ -97,6 +97,7 @@ include ~/.config/sway/media.conf
 
 input type:keyboard {
     xkb_layout us
+    xkb_variant intl
 }
 
 include /etc/sway/config.d/*
