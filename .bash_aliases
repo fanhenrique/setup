@@ -21,7 +21,9 @@ alias cp="cp -v"
 alias update="sudo apt update"
 alias upgrade="sudo apt upgrade"
 
-alias hg="history | grep"
+hg() {
+    history | grep --color=always "$@" | sed -E 's/^ *[0-9]+ +//'
+}
 
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
